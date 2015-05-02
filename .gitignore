@@ -59,12 +59,16 @@ nb-configuration.xml
 .gradle
 gradle-app.setting
 build/
+gradlew
+gradlew.bat
+gradle/
 
 ## OS Specific
 .DS_Store
 
-## Gradle
+## jME3
 
-gradlew
-gradlew.bat
-gradle/
+*.so
+*.dll
+
+
