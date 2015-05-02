@@ -62,3 +62,9 @@ build/
 
 ## OS Specific
 .DS_Store
+
+## Gradle
+
+gradlew
+gradlew.bat
+gradle/
