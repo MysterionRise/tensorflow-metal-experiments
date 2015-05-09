@@ -1,4 +1,5 @@
 import com.jme3.app.SimpleApplication
+import com.jme3.input.controls.ActionListener
 import com.jme3.material.Material
 import com.jme3.material.RenderState.BlendMode
 import com.jme3.math.Vector3f
@@ -6,7 +7,7 @@ import com.jme3.scene.{Node, Spatial}
 import com.jme3.texture.Texture2D
 import com.jme3.ui.Picture
 
-object MyFirstGame extends SimpleApplication {
+object MyFirstGame extends SimpleApplication with ActionListener {
 
   override def simpleInitApp(): Unit = {
     // set up camera for 2D
@@ -23,6 +24,7 @@ object MyFirstGame extends SimpleApplication {
     player.setUserData("alive", true)
     player.move(settings.getWidth() / 2, settings.getHeight() / 2, 0)
     guiNode.attachChild(player)
+    player.addControl(new PlayerControl(settings.getWidth(), settings.getHeight()))
   }
 
   // entry point of the game
@@ -59,4 +61,7 @@ object MyFirstGame extends SimpleApplication {
     node
   }
 
+  override def onAction(name: String, isPressed: Boolean, tpf: Float): Unit = {
+    player.
+  }
 }
