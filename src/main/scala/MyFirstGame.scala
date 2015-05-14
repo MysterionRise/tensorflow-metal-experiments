@@ -1,5 +1,6 @@
 import com.jme3.app.SimpleApplication
-import com.jme3.input.controls.ActionListener
+import com.jme3.input.KeyInput
+import com.jme3.input.controls.{KeyTrigger, ActionListener}
 import com.jme3.material.Material
 import com.jme3.material.RenderState.BlendMode
 import com.jme3.math.Vector3f
@@ -8,6 +9,9 @@ import com.jme3.texture.Texture2D
 import com.jme3.ui.Picture
 
 object MyFirstGame extends SimpleApplication with ActionListener {
+
+  private var player: Spatial = _
+  private val Alive = "alive"
 
   override def simpleInitApp(): Unit = {
     // set up camera for 2D
@@ -19,9 +23,21 @@ object MyFirstGame extends SimpleApplication with ActionListener {
     setDisplayStatView(false)
     setDisplayFps(false)
 
+    // add listener
+    inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_LEFT))
+    inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT))
+    inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_UP))
+    inputManager.addMapping("down", new KeyTrigger(KeyInput.KEY_DOWN))
+    inputManager.addMapping("return", new KeyTrigger(KeyInput.KEY_RETURN))
+    inputManager.addListener(this, "left")
+    inputManager.addListener(this, "right")
+    inputManager.addListener(this, "up")
+    inputManager.addListener(this, "down")
+    inputManager.addListener(this, "return")
+
     // add player
-    val player = getSpatial("Player")
-    player.setUserData("alive", true)
+    player = getSpatial("Player")
+    player.setUserData(Alive, true)
     player.move(settings.getWidth() / 2, settings.getHeight() / 2, 0)
     guiNode.attachChild(player)
     player.addControl(new PlayerControl(settings.getWidth(), settings.getHeight()))
@@ -62,6 +78,15 @@ object MyFirstGame extends SimpleApplication with ActionListener {
   }
 
   override def onAction(name: String, isPressed: Boolean, tpf: Float): Unit = {
-    player.
+      if (player.getUserData[Boolean](Alive)) {
+          name match {
+              // TODO change it to getControl by class
+            case "up" => player.getControl(0).asInstanceOf[PlayerControl].up = isPressed
+            case "down" => player.getControl(0).asInstanceOf[PlayerControl].down = isPressed
+            case "left" => player.getControl(0).asInstanceOf[PlayerControl].left = isPressed
+            case "right" => player.getControl(0).asInstanceOf[PlayerControl].right = isPressed
+          }
+
+      }
   }
 }
