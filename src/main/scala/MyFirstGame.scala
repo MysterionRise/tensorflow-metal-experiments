@@ -28,12 +28,10 @@ object MyFirstGame extends SimpleApplication with ActionListener {
     inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_RIGHT))
     inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_UP))
     inputManager.addMapping("down", new KeyTrigger(KeyInput.KEY_DOWN))
-    inputManager.addMapping("return", new KeyTrigger(KeyInput.KEY_RETURN))
     inputManager.addListener(this, "left")
     inputManager.addListener(this, "right")
     inputManager.addListener(this, "up")
     inputManager.addListener(this, "down")
-    inputManager.addListener(this, "return")
 
     // add player
     player = getSpatial("Player")
