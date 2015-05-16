@@ -99,6 +99,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         case Down => player.getControl(0).asInstanceOf[PlayerControl].down = isPressed
         case Left => player.getControl(0).asInstanceOf[PlayerControl].left = isPressed
         case Right => player.getControl(0).asInstanceOf[PlayerControl].right = isPressed
+        case _ =>
       }
 
     }
@@ -111,28 +112,36 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     difference.normalizeLocal
   }
 
+  def launchTwoBullets = {
+    if (System.currentTimeMillis() - bulletCooldown > 83f) {
+      bulletCooldown = System.currentTimeMillis
+      val aim = getAimDirection
+      val offset = new Vector3f(aim.y / 3, -aim.x / 3, 0);
+
+      //                    init bullet 1
+      val bullet = getSpatial("Bullet")
+      var finalOffset = aim.add(offset).mult(30)
+      var trans = player.getLocalTranslation().add(finalOffset)
+      bullet.setLocalTranslation(trans)
+      bullet.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight()))
+      bulletNode.attachChild(bullet);
+
+      //                    init bullet 2
+      val bullet2 = getSpatial("Bullet")
+      finalOffset = aim.add(offset.negate()).mult(30)
+      trans = player.getLocalTranslation().add(finalOffset)
+      bullet2.setLocalTranslation(trans)
+      bullet2.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight()))
+      bulletNode.attachChild(bullet2)
+    }
+  }
+
   override def onAnalog(name: String, value: Float, tpf: Float): Unit = {
-    if (player.getUserData[Boolean](Alive) && name.equals(MouseClick)) {
-      if (System.currentTimeMillis() - bulletCooldown > 83f) {
-        bulletCooldown = System.currentTimeMillis
-        val aim = getAimDirection
-        val offset = new Vector3f(aim.y / 3, -aim.x / 3, 0);
-
-        //                    init bullet 1
-        val bullet = getSpatial("Bullet")
-        var finalOffset = aim.add(offset).mult(30)
-        var trans = player.getLocalTranslation().add(finalOffset)
-        bullet.setLocalTranslation(trans)
-        bullet.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight()))
-        bulletNode.attachChild(bullet);
-
-        //                    init bullet 2
-        val bullet2 = getSpatial("Bullet")
-        finalOffset = aim.add(offset.negate()).mult(30)
-        trans = player.getLocalTranslation().add(finalOffset)
-        bullet2.setLocalTranslation(trans)
-        bullet2.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight()))
-        bulletNode.attachChild(bullet2)
+    System.out.println(name)
+    if (player.getUserData[Boolean](Alive)) {
+      name match {
+        case MouseClick => launchTwoBullets
+        case _ =>
       }
     }
   }
