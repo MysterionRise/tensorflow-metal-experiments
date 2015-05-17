@@ -7,7 +7,7 @@ case class PlayerControl(screenWidth: Int, screenHeight: Int) extends AbstractCo
   //    is the player currently moving?
   var up, down, left, right: Boolean = _
   //    speed of the player
-  var speed = 150f
+  var speed = 250f
   //    lastRotation of the player
   var lastRotation: Float = _
 
