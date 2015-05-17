@@ -3,7 +3,7 @@ import com.jme3.input.{MouseInput, KeyInput}
 import com.jme3.input.controls.{MouseButtonTrigger, AnalogListener, KeyTrigger, ActionListener}
 import com.jme3.material.Material
 import com.jme3.material.RenderState.BlendMode
-import com.jme3.math.Vector3f
+import com.jme3.math.{FastMath, Vector2f, Vector3f}
 import com.jme3.scene.{Node, Spatial}
 import com.jme3.texture.Texture2D
 import com.jme3.ui.Picture
@@ -144,5 +144,14 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         case _ =>
       }
     }
+  }
+
+  def getAngleFromVector(vec: Vector3f): Float = {
+    val vec2 = new Vector2f(vec.x, vec.y)
+    vec2.getAngle()
+  }
+
+  def getVectorFromAngle(angle: Float): Vector3f = {
+    new Vector3f(FastMath.cos(angle), FastMath.sin(angle), 0)
   }
 }
