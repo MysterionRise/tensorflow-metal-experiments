@@ -1,8 +1,11 @@
+package org.mystic.controls
+
 import com.jme3.math.Vector3f
 import com.jme3.renderer.{RenderManager, ViewPort}
 import com.jme3.scene.control.AbstractControl
+import org.mystic.Utils
 
-case class BulletControl(direction: Vector3f, screenWidth: Int, screenHeight: Int) extends AbstractControl {
+class BulletControl(direction: Vector3f, screenWidth: Int, screenHeight: Int) extends AbstractControl {
 
   private val speed = 1000f
   private var rotation: Float = _
@@ -14,7 +17,7 @@ case class BulletControl(direction: Vector3f, screenWidth: Int, screenHeight: In
     spatial.move(direction.mult(speed * tpf))
 
     //        rotation
-    val actualRotation = MyFirstGame.getAngleFromVector(direction)
+    val actualRotation = Utils.getAngleFromVector(direction)
     if (actualRotation != rotation) {
       spatial.rotate(0, 0, actualRotation - rotation)
       rotation = actualRotation

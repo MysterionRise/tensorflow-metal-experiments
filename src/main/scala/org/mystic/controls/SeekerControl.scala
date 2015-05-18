@@ -1,4 +1,6 @@
-import com.jme3.renderer.{ViewPort, RenderManager}
+package org.mystic.controls
+
+import com.jme3.renderer.{RenderManager, ViewPort}
 import com.jme3.scene.Spatial
 import com.jme3.scene.control.AbstractControl
 

@@ -1,5 +1,7 @@
+package org.mystic.controls
+
 import com.jme3.math.FastMath
-import com.jme3.renderer.{ViewPort, RenderManager}
+import com.jme3.renderer.{RenderManager, ViewPort}
 import com.jme3.scene.control.AbstractControl
 
 class PlayerControl(screenWidth: Int, screenHeight: Int) extends AbstractControl {

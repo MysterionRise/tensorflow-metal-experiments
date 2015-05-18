@@ -1,12 +1,15 @@
+package org.mystic
+
 import com.jme3.app.SimpleApplication
-import com.jme3.input.{MouseInput, KeyInput}
-import com.jme3.input.controls.{MouseButtonTrigger, AnalogListener, KeyTrigger, ActionListener}
+import com.jme3.input.controls.{ActionListener, AnalogListener, KeyTrigger, MouseButtonTrigger}
+import com.jme3.input.{KeyInput, MouseInput}
 import com.jme3.material.Material
 import com.jme3.material.RenderState.BlendMode
 import com.jme3.math.{FastMath, Vector2f, Vector3f}
 import com.jme3.scene.{Node, Spatial}
 import com.jme3.texture.Texture2D
 import com.jme3.ui.Picture
+import org.mystic.controls.{BulletControl, PlayerControl, SeekerControl, WandererControl}
 
 import scala.util.Random
 
@@ -154,15 +157,6 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         case _ =>
       }
     }
-  }
-
-  def getAngleFromVector(vec: Vector3f): Float = {
-    val vec2 = new Vector2f(vec.x, vec.y)
-    vec2.getAngle()
-  }
-
-  def getVectorFromAngle(angle: Float): Vector3f = {
-    new Vector3f(FastMath.cos(angle), FastMath.sin(angle), 0)
   }
 
   def getSpawnPosition: Vector3f = {
