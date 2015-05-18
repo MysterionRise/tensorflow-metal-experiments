@@ -8,6 +8,8 @@ import com.jme3.scene.{Node, Spatial}
 import com.jme3.texture.Texture2D
 import com.jme3.ui.Picture
 
+import scala.util.Random
+
 object MyFirstGame extends SimpleApplication with ActionListener with AnalogListener {
 
   private var player: Spatial = _
@@ -20,6 +22,10 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   private var bulletCooldown: Long = 0
   private var bulletNode: Node = _
+  private var enemyNode: Node = _
+
+  private var enemySpawnCooldown: Long = _
+  private var enemySpawnChance: Float = 80
 
   override def simpleInitApp(): Unit = {
     // set up camera for 2D
@@ -48,6 +54,10 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     //        setup the bulletNode
     bulletNode = new Node("bullets")
     guiNode.attachChild(bulletNode)
+
+    // set up the enemyNode
+    enemyNode = new Node("enemies")
+    guiNode.attachChild(enemyNode)
 
     // add player
     player = getSpatial("Player")
@@ -153,5 +163,56 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   def getVectorFromAngle(angle: Float): Vector3f = {
     new Vector3f(FastMath.cos(angle), FastMath.sin(angle), 0)
+  }
+
+  def getSpawnPosition: Vector3f = {
+    var pos: Vector3f = new Vector3f(new Random().nextInt(settings.getWidth()), new Random().nextInt(settings.getHeight()), 0)
+    do {
+      pos = new Vector3f(new Random().nextInt(settings.getWidth()), new Random().nextInt(settings.getHeight()), 0)
+    } while (pos.distanceSquared(player.getLocalTranslation()) < 8000)
+    pos
+  }
+
+
+  def createSeeker = {
+    val seeker = getSpatial("Seeker")
+    seeker.setLocalTranslation(getSpawnPosition)
+    seeker.addControl(new SeekerControl(player))
+    seeker.setUserData("active", false)
+    enemyNode.attachChild(seeker)
+  }
+
+
+  def createWanderer = {
+    val wanderer = getSpatial("Wanderer")
+    wanderer.setLocalTranslation(getSpawnPosition)
+    wanderer.addControl(new WandererControl())
+    wanderer.setUserData("active", false)
+    enemyNode.attachChild(wanderer)
+  }
+
+  def spawnEnemies = {
+    if (System.currentTimeMillis() - enemySpawnCooldown >= 17) {
+      enemySpawnCooldown = System.currentTimeMillis
+
+      if (enemyNode.getQuantity < 50) {
+        if (new Random().nextInt(enemySpawnChance.toInt) == 0) {
+          createSeeker
+        }
+        if (new Random().nextInt(enemySpawnChance.toInt) == 0) {
+          createWanderer
+        }
+      }
+      //increase Spawn Time
+      if (enemySpawnChance >= 1.1f) {
+        enemySpawnChance -= 0.005f
+      }
+    }
+  }
+
+  override def simpleUpdate(tpf: Float): Unit = {
+    if (player.getUserData[Boolean](Alive)) {
+      spawnEnemies
+    }
   }
 }
