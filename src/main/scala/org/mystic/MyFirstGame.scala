@@ -16,7 +16,7 @@ import scala.util.Random
 object MyFirstGame extends SimpleApplication with ActionListener with AnalogListener {
 
   private var player: Spatial = _
-  private val Alive = "alive"
+  val Alive = "alive"
   private val Left = "left"
   private val Right = "right"
   private val Up = "up"
@@ -180,7 +180,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   def createWanderer = {
     val wanderer = getSpatial("Wanderer")
     wanderer.setLocalTranslation(getSpawnPosition)
-    wanderer.addControl(new WandererControl())
+    wanderer.addControl(new WandererControl(settings.getWidth, settings.getHeight))
     wanderer.setUserData("active", false)
     enemyNode.attachChild(wanderer)
   }
