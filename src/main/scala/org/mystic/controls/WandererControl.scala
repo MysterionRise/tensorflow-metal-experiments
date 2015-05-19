@@ -5,7 +5,8 @@ import com.jme3.renderer.{RenderManager, ViewPort}
 import com.jme3.scene.Node
 import com.jme3.scene.control.AbstractControl
 import com.jme3.ui.Picture
-import org.mystic.{Utils, MyFirstGame}
+import org.mystic.MyFirstGame
+import org.mystic.Utils._
 
 import scala.util.Random
 
@@ -18,13 +19,13 @@ class WandererControl(width: Int, height: Int) extends AbstractControl {
   override def controlRender(rm: RenderManager, vp: ViewPort): Unit = {}
 
   override def controlUpdate(tpf: Float): Unit = {
-    if (spatial.getUserData[Boolean](MyFirstGame.Alive)) {
+    if (checkSpatialIsAlive(spatial)) {
       // translate the wanderer
 
       // change the directionAngle a bit
       directionAngle += (new Random().nextFloat() * 20f - 10f) * tpf
       System.out.println(directionAngle)
-      val directionVector = Utils.getVectorFromAngle(directionAngle)
+      val directionVector = getVectorFromAngle(directionAngle)
       directionVector.multLocal(1000f)
       velocity.addLocal(directionVector)
 
@@ -34,9 +35,9 @@ class WandererControl(width: Int, height: Int) extends AbstractControl {
 
       // make the wanderer bounce off the screen borders
       val loc = spatial.getLocalTranslation()
-      if (loc.x > width || loc.y > height) {
+      if (loc.x > width || loc.y > height || loc.x < 0 || loc.y < 0) {
         val newDirectionVector = new Vector3f(width / 2, height / 2, 0).subtract(loc)
-        directionAngle = Utils.getAngleFromVector(newDirectionVector)
+        directionAngle = getAngleFromVector(newDirectionVector)
       }
 
       // rotate the wanderer

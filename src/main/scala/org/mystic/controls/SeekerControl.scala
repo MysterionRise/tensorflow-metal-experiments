@@ -6,6 +6,7 @@ import com.jme3.scene.{Node, Spatial}
 import com.jme3.scene.control.AbstractControl
 import com.jme3.ui.Picture
 import org.mystic.MyFirstGame
+import org.mystic.Utils._
 
 class SeekerControl(player: Spatial) extends AbstractControl {
 
@@ -15,7 +16,7 @@ class SeekerControl(player: Spatial) extends AbstractControl {
   override def controlRender(rm: RenderManager, vp: ViewPort): Unit = {}
 
   override def controlUpdate(tpf: Float): Unit = {
-    if (spatial.getUserData[Boolean](MyFirstGame.Alive)) {
+    if (checkSpatialIsAlive(spatial)) {
       //translate the seeker
       val playerDirection = player.getLocalTranslation().subtract(spatial.getLocalTranslation())
       playerDirection.normalizeLocal()

@@ -6,10 +6,13 @@ import com.jme3.input.{KeyInput, MouseInput}
 import com.jme3.material.Material
 import com.jme3.material.RenderState.BlendMode
 import com.jme3.math.{FastMath, Vector2f, Vector3f}
+import com.jme3.post.FilterPostProcessor
+import com.jme3.post.filters.BloomFilter
 import com.jme3.scene.{Node, Spatial}
 import com.jme3.texture.Texture2D
 import com.jme3.ui.Picture
 import org.mystic.controls.{BulletControl, PlayerControl, SeekerControl, WandererControl}
+import org.mystic.Utils._
 
 import scala.util.Random
 
@@ -68,6 +71,13 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     player.move(settings.getWidth() / 2, settings.getHeight() / 2, 0)
     guiNode.attachChild(player)
     player.addControl(new PlayerControl(settings.getWidth(), settings.getHeight()))
+
+    // add bloom filter
+    val fpp = new FilterPostProcessor(assetManager)
+    val bloom = new BloomFilter()
+    fpp.addFilter(bloom)
+    guiViewPort.addProcessor(fpp)
+    guiViewPort.setClearColor(true)
   }
 
   // entry point of the game
@@ -105,7 +115,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   override def onAction(name: String, isPressed: Boolean, tpf: Float): Unit = {
-    if (player.getUserData[Boolean](Alive)) {
+    if (checkSpatialIsAlive(player)) {
       name match {
         // TODO change it to getControl by class
         case Up => player.getControl(0).asInstanceOf[PlayerControl].up = isPressed
@@ -150,8 +160,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   override def onAnalog(name: String, value: Float, tpf: Float): Unit = {
-    System.out.println(name)
-    if (player.getUserData[Boolean](Alive)) {
+    if (checkSpatialIsAlive(player)) {
       name match {
         case MouseClick => launchTwoBullets
         case _ =>
@@ -205,7 +214,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   override def simpleUpdate(tpf: Float): Unit = {
-    if (player.getUserData[Boolean](Alive)) {
+    if (checkSpatialIsAlive(player)) {
       spawnEnemies
     }
   }
