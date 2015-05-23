@@ -83,6 +83,9 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   // entry point of the game
   def main(args: Array[String]): Unit = {
+//    settings.clear()
+//    settings.setTitle("Neon shooter")
+//    MyFirstGame.setSettings(settings)
     MyFirstGame.start()
   }
 
@@ -241,7 +244,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   override def simpleUpdate(tpf: Float): Unit = {
     if (checkSpatialIsAlive(player)) {
       spawnEnemies
-      handleCollisions
+//      handleCollisions
     }
   }
 }
