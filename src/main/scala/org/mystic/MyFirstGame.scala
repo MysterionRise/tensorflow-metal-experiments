@@ -1,5 +1,6 @@
 package org.mystic
 
+import scala.collection.JavaConversions._
 import com.jme3.app.SimpleApplication
 import com.jme3.input.controls.{ActionListener, AnalogListener, KeyTrigger, MouseButtonTrigger}
 import com.jme3.input.{KeyInput, MouseInput}
@@ -107,7 +108,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
     // set the radius of the spatial
     // (using width only as a simple approximation)
-    node.setUserData("radius", width / 2)
+    node.setUserData("radius", (width / 2.0f))
 
     // attach the picture to the node and return it
     node.attachChild(pic)
@@ -213,9 +214,34 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     }
   }
 
+
+  def checkCollision(a: Spatial, b: Spatial): Boolean = {
+    val distance = a.getLocalTranslation().distance(b.getLocalTranslation())
+    val maxDistance = a.getUserData("radius").asInstanceOf[Float] + b.getUserData("radius").asInstanceOf[Float]
+    distance <= maxDistance
+  }
+
+  def killPlayer = {
+    player.removeFromParent()
+//    player.getControl(0).asInstanceOf[PlayerControl].reset()
+    player.setUserData(MyFirstGame.Alive, false)
+    player.setUserData("dieTime", System.currentTimeMillis())
+    enemyNode.detachAllChildren();
+  }
+
+  def handleCollisions = {
+    // should the player die?
+    val childs = enemyNode.getChildren.foreach(enemy => {
+      if (checkSpatialIsAlive(enemy) && checkCollision(player, enemy)) {
+        killPlayer
+      }
+    })
+  }
+
   override def simpleUpdate(tpf: Float): Unit = {
     if (checkSpatialIsAlive(player)) {
       spawnEnemies
+      handleCollisions
     }
   }
 }
