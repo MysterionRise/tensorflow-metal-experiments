@@ -20,25 +20,25 @@ class PlayerControl(screenWidth: Int, screenHeight: Int) extends AbstractControl
 
   override def controlUpdate(tpf: Float): Unit = {
     if (up) {
-      if (spatial.getLocalTranslation().y < screenHeight - spatial.getUserData[Int](Radius)) {
+      if (spatial.getLocalTranslation().y < screenHeight - spatial.getUserData[Float](Radius)) {
         spatial.move(0, tpf * speed, 0)
       }
       spatial.rotate(0, 0, -lastRotation + FastMath.PI / 2);
       lastRotation = FastMath.PI / 2
     } else if (down) {
-      if (spatial.getLocalTranslation().y > spatial.getUserData[Int](Radius)) {
+      if (spatial.getLocalTranslation().y > spatial.getUserData[Float](Radius)) {
         spatial.move(0, -tpf * speed, 0)
       }
       spatial.rotate(0, 0, -lastRotation + FastMath.PI * 1.5f);
       lastRotation = FastMath.PI * 1.5f
     } else if (left) {
-      if (spatial.getLocalTranslation().x > spatial.getUserData[Int](Radius)) {
+      if (spatial.getLocalTranslation().x > spatial.getUserData[Float](Radius)) {
         spatial.move(-tpf * speed, 0, 0)
       }
       spatial.rotate(0, 0, -lastRotation + FastMath.PI)
       lastRotation = FastMath.PI
     } else if (right) {
-      if (spatial.getLocalTranslation().x < screenWidth - spatial.getUserData[Int](Radius)) {
+      if (spatial.getLocalTranslation().x < screenWidth - spatial.getUserData[Float](Radius)) {
         spatial.move(tpf * speed, 0, 0)
       }
       spatial.rotate(0, 0, -lastRotation + 0)

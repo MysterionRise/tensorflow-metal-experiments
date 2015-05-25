@@ -1,5 +1,7 @@
 package org.mystic
 
+import com.jme3.system.AppSettings
+
 import scala.collection.JavaConversions._
 import com.jme3.app.SimpleApplication
 import com.jme3.input.controls.{ActionListener, AnalogListener, KeyTrigger, MouseButtonTrigger}
@@ -21,6 +23,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   private var player: Spatial = _
   val Alive = "alive"
+  private val Radius = "radius"
   private val Left = "left"
   private val Right = "right"
   private val Up = "up"
@@ -83,9 +86,9 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   // entry point of the game
   def main(args: Array[String]): Unit = {
-//    settings.clear()
-//    settings.setTitle("Neon shooter")
-//    MyFirstGame.setSettings(settings)
+    val mySettings = new AppSettings(true)
+    mySettings.setTitle("Neon shooter")
+    MyFirstGame.setSettings(mySettings)
     MyFirstGame.start()
   }
 
@@ -111,7 +114,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
     // set the radius of the spatial
     // (using width only as a simple approximation)
-    node.setUserData("radius", (width / 2.0f))
+    node.setUserData(Radius, (width / 2.0f).toFloat)
 
     // attach the picture to the node and return it
     node.attachChild(pic)
@@ -220,21 +223,21 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   def checkCollision(a: Spatial, b: Spatial): Boolean = {
     val distance = a.getLocalTranslation().distance(b.getLocalTranslation())
-    val maxDistance = a.getUserData("radius").asInstanceOf[Float] + b.getUserData("radius").asInstanceOf[Float]
+    val maxDistance = a.getUserData[Float](Radius) + b.getUserData[Float](Radius)
     distance <= maxDistance
   }
 
   def killPlayer = {
     player.removeFromParent()
-//    player.getControl(0).asInstanceOf[PlayerControl].reset()
+    //    player.getControl(0).asInstanceOf[PlayerControl].reset()
     player.setUserData(MyFirstGame.Alive, false)
     player.setUserData("dieTime", System.currentTimeMillis())
-    enemyNode.detachAllChildren();
+    enemyNode.detachAllChildren()
   }
 
   def handleCollisions = {
     // should the player die?
-    val childs = enemyNode.getChildren.foreach(enemy => {
+    enemyNode.getChildren.foreach(enemy => {
       if (checkSpatialIsAlive(enemy) && checkCollision(player, enemy)) {
         killPlayer
       }
@@ -244,7 +247,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   override def simpleUpdate(tpf: Float): Unit = {
     if (checkSpatialIsAlive(player)) {
       spawnEnemies
-//      handleCollisions
+      handleCollisions
     }
   }
 }
