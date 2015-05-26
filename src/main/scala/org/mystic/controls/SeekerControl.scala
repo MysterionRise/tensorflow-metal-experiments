@@ -16,7 +16,7 @@ class SeekerControl(player: Spatial) extends AbstractControl {
   override def controlRender(rm: RenderManager, vp: ViewPort): Unit = {}
 
   override def controlUpdate(tpf: Float): Unit = {
-    if (checkSpatialIsAlive(spatial)) {
+    checkSpatialIsAlive(spatial) {
       //translate the seeker
       val playerDirection = player.getLocalTranslation().subtract(spatial.getLocalTranslation())
       playerDirection.normalizeLocal()
@@ -30,7 +30,7 @@ class SeekerControl(player: Spatial) extends AbstractControl {
         spatial.rotateUpTo(velocity.normalize())
         spatial.rotate(0, 0, FastMath.PI / 2f)
       }
-    } else {
+    } {
       // handle the "active"-status
       val dif = System.currentTimeMillis() - spawnTime
       if (dif >= 1000f) {

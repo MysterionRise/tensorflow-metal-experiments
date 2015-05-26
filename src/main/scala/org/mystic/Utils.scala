@@ -5,15 +5,9 @@ import com.jme3.scene.Spatial
 
 object Utils {
 
-  def getAngleFromVector(vec: Vector3f): Float = {
-    val vec2 = new Vector2f(vec.x, vec.y)
-    vec2.getAngle()
-  }
+  def getAngleFromVector(vec: Vector3f): Float = new Vector2f(vec.x, vec.y).getAngle
 
-  def getVectorFromAngle(angle: Float): Vector3f = {
-    new Vector3f(FastMath.cos(angle), FastMath.sin(angle), 0)
-  }
+  def getVectorFromAngle(angle: Float): Vector3f = new Vector3f(FastMath.cos(angle), FastMath.sin(angle), 0)
 
-  // todo make it high order function or party applied
-  def checkSpatialIsAlive(spatial: Spatial): Boolean = spatial.getUserData[Boolean](MyFirstGame.Alive)
+  def checkSpatialIsAlive(spatial: Spatial)(tr: Unit)(fal: Unit) = if (spatial.getUserData[Boolean](MyFirstGame.Alive)) tr else fal
 }

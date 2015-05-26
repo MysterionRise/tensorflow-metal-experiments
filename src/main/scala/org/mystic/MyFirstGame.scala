@@ -122,7 +122,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   override def onAction(name: String, isPressed: Boolean, tpf: Float): Unit = {
-    if (checkSpatialIsAlive(player)) {
+    checkSpatialIsAlive(player) {
       name match {
         // TODO change it to getControl by class
         case Up => player.getControl(0).asInstanceOf[PlayerControl].up = isPressed
@@ -131,8 +131,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         case Right => player.getControl(0).asInstanceOf[PlayerControl].right = isPressed
         case _ =>
       }
-
-    }
+    }()
   }
 
   def getAimDirection: Vector3f = {
@@ -167,12 +166,12 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   override def onAnalog(name: String, value: Float, tpf: Float): Unit = {
-    if (checkSpatialIsAlive(player)) {
+    checkSpatialIsAlive(player) {
       name match {
         case MouseClick => launchTwoBullets
         case _ =>
       }
-    }
+    }()
   }
 
   def getSpawnPosition: Vector3f = {
@@ -238,16 +237,17 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   def handleCollisions = {
     // should the player die?
     enemyNode.getChildren.foreach(enemy => {
-      if (checkSpatialIsAlive(enemy) && checkCollision(player, enemy)) {
-        killPlayer
-      }
+      checkSpatialIsAlive(enemy)(
+        if (checkCollision(player, enemy))
+          killPlayer
+      )()
     })
   }
 
   override def simpleUpdate(tpf: Float): Unit = {
-    if (checkSpatialIsAlive(player)) {
+    checkSpatialIsAlive(player) {
       spawnEnemies
       handleCollisions
-    }
+    }()
   }
 }
