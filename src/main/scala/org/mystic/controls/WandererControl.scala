@@ -19,7 +19,7 @@ class WandererControl(width: Int, height: Int) extends AbstractControl {
   override def controlRender(rm: RenderManager, vp: ViewPort): Unit = {}
 
   override def controlUpdate(tpf: Float): Unit = {
-    if (checkSpatialIsAlive(spatial)) {
+    checkSpatialIsAlive(spatial) {
       // translate the wanderer
 
       // change the directionAngle a bit
@@ -42,7 +42,7 @@ class WandererControl(width: Int, height: Int) extends AbstractControl {
 
       // rotate the wanderer
       spatial.rotate(0, 0, tpf * 2)
-    } else {
+    } {
       // handle the "active"-status
       val dif = System.currentTimeMillis() - spawnTime
       if (dif >= 1000f) {
