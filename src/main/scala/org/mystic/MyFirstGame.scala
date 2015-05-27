@@ -1,5 +1,6 @@
 package org.mystic
 
+import java.awt.GraphicsEnvironment
 import com.jme3.system.AppSettings
 
 import scala.collection.JavaConversions._
@@ -17,13 +18,15 @@ import com.jme3.ui.Picture
 import org.mystic.controls.{BulletControl, PlayerControl, SeekerControl, WandererControl}
 import org.mystic.Utils._
 
+import scala.collection.immutable.HashSet
 import scala.util.Random
 
 object MyFirstGame extends SimpleApplication with ActionListener with AnalogListener {
 
   private var player: Spatial = _
   val Alive = "alive"
-  private val Radius = "radius"
+  val Radius = "radius"
+  val DieTime: String = "dieTime"
   private val Left = "left"
   private val Right = "right"
   private val Up = "up"
@@ -36,16 +39,20 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   private var enemySpawnCooldown: Long = _
   private var enemySpawnChance: Float = 80
+  private var sound: SoundManager = _
 
   override def simpleInitApp(): Unit = {
+    // create sounds manager
+    sound = new SoundManager(assetManager)
+    sound.startMusic
     // set up camera for 2D
     cam.setParallelProjection(true)
     cam.setLocation(new Vector3f(0, 0, 0.5f))
     getFlyByCamera().setEnabled(false)
 
     // turn off stats view
-    setDisplayStatView(false)
-    setDisplayFps(false)
+    setDisplayStatView(true)
+    setDisplayFps(true)
 
     // add listener for keyboard
     inputManager.addMapping(Left, new KeyTrigger(KeyInput.KEY_LEFT))
@@ -88,6 +95,26 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   def main(args: Array[String]): Unit = {
     val mySettings = new AppSettings(true)
     mySettings.setTitle("Neon shooter")
+    mySettings.setSettingsDialogImage("Interface/splashscreen.png")
+    //    val device = GraphicsEnvironment.getLocalGraphicsEnvironment.getDefaultScreenDevice
+    //    val modes = device.getDisplayModes
+    //    val widths = new HashSet[Int]
+    //    val heights = new HashSet[Int]
+    //    val refreshRate = new HashSet[Int]
+    //    val bitDepths = new HashSet[Int]
+    //    modes.foreach(x => {
+    //      widths + x.getWidth
+    //      heights + x.getHeight
+    //      refreshRate + x.getRefreshRate
+    //      bitDepths + x.getBitDepth
+    //      println(s"${x.getWidth} ${x.getHeight} ${x.getRefreshRate} ${x.getBitDepth}")
+    //    })
+    //    val lastMode = modes.length - 1
+    //    mySettings.setResolution(modes(lastMode).getWidth, modes(lastMode).getHeight)
+    //    mySettings.setFrequency(modes(lastMode).getRefreshRate)
+    //    mySettings.setDepthBits(modes(lastMode).getBitDepth)
+    //    mySettings.setFullscreen(device.isFullScreenSupported)
+    //    MyFirstGame.setShowSettings(false)
     MyFirstGame.setSettings(mySettings)
     MyFirstGame.start()
   }
@@ -122,7 +149,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   override def onAction(name: String, isPressed: Boolean, tpf: Float): Unit = {
-    checkSpatialIsAlive(player) {
+    checkSpatialIsAlive(player, () => {
       name match {
         // TODO change it to getControl by class
         case Up => player.getControl(0).asInstanceOf[PlayerControl].up = isPressed
@@ -131,7 +158,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         case Right => player.getControl(0).asInstanceOf[PlayerControl].right = isPressed
         case _ =>
       }
-    }()
+    }, () => {})
   }
 
   def getAimDirection: Vector3f = {
@@ -143,9 +170,10 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   def launchTwoBullets = {
     if (System.currentTimeMillis() - bulletCooldown > 83f) {
+      sound.shoot
       bulletCooldown = System.currentTimeMillis
       val aim = getAimDirection
-      val offset = new Vector3f(aim.y / 3, -aim.x / 3, 0);
+      val offset = new Vector3f(aim.y / 3, -aim.x / 3, 0)
 
       //                    init bullet 1
       val bullet = getSpatial("Bullet")
@@ -153,7 +181,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       var trans = player.getLocalTranslation().add(finalOffset)
       bullet.setLocalTranslation(trans)
       bullet.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight()))
-      bulletNode.attachChild(bullet);
+      bulletNode.attachChild(bullet)
 
       //                    init bullet 2
       val bullet2 = getSpatial("Bullet")
@@ -166,12 +194,12 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   override def onAnalog(name: String, value: Float, tpf: Float): Unit = {
-    checkSpatialIsAlive(player) {
+    checkSpatialIsAlive(player, () => {
       name match {
         case MouseClick => launchTwoBullets
         case _ =>
       }
-    }()
+    }, () => {})
   }
 
   def getSpawnPosition: Vector3f = {
@@ -203,6 +231,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   def spawnEnemies = {
     if (System.currentTimeMillis() - enemySpawnCooldown >= 17) {
       enemySpawnCooldown = System.currentTimeMillis
+//      sound.spawn
 
       if (enemyNode.getQuantity < 50) {
         if (new Random().nextInt(enemySpawnChance.toInt) == 0) {
@@ -229,25 +258,39 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   def killPlayer = {
     player.removeFromParent()
     //    player.getControl(0).asInstanceOf[PlayerControl].reset()
-    player.setUserData(MyFirstGame.Alive, false)
-    player.setUserData("dieTime", System.currentTimeMillis())
+    player.setUserData(Alive, false)
+    player.setUserData(DieTime, System.currentTimeMillis())
     enemyNode.detachAllChildren()
   }
 
   def handleCollisions = {
     // should the player die?
     enemyNode.getChildren.foreach(enemy => {
-      checkSpatialIsAlive(enemy)(
+      checkSpatialIsAlive(enemy, () => {
         if (checkCollision(player, enemy))
           killPlayer
-      )()
+      }, () => {})
+      bulletNode.getChildren.foreach(bullet => {
+        if (checkCollision(enemy, bullet)) {
+          sound.explosion
+          enemyNode.detachChild(enemy)
+          bulletNode.detachChild(bullet)
+        }
+      })
     })
   }
 
   override def simpleUpdate(tpf: Float): Unit = {
-    checkSpatialIsAlive(player) {
+    checkSpatialIsAlive(player, () => {
       spawnEnemies
       handleCollisions
-    }()
+    }, () => {
+      if (System.currentTimeMillis() - player.getUserData(DieTime).asInstanceOf[Long] > 4000f) {
+        player.move(0, 0, 0)
+        player.move(settings.getWidth() / 2, settings.getHeight() / 2, 0)
+        guiNode.attachChild(player)
+        player.setUserData(Alive, true)
+      }
+    })
   }
 }
