@@ -47,12 +47,12 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     sound.startMusic
     // set up camera for 2D
     cam.setParallelProjection(true)
-    cam.setLocation(new Vector3f(0, 0, 0.5f))
+    cam.setLocation(new Vector3f(0, 0, 10.0f))
     getFlyByCamera().setEnabled(false)
 
     // turn off stats view
-    setDisplayStatView(true)
-    setDisplayFps(true)
+    setDisplayStatView(false)
+    setDisplayFps(false)
 
     // add listener for keyboard
     inputManager.addMapping(Left, new KeyTrigger(KeyInput.KEY_LEFT))
@@ -231,7 +231,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   def spawnEnemies = {
     if (System.currentTimeMillis() - enemySpawnCooldown >= 17) {
       enemySpawnCooldown = System.currentTimeMillis
-//      sound.spawn
+      //      sound.spawn
 
       if (enemyNode.getQuantity < 50) {
         if (new Random().nextInt(enemySpawnChance.toInt) == 0) {
@@ -257,7 +257,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   def killPlayer = {
     player.removeFromParent()
-    //    player.getControl(0).asInstanceOf[PlayerControl].reset()
+    player.getControl(0).asInstanceOf[PlayerControl].reset()
     player.setUserData(Alive, false)
     player.setUserData(DieTime, System.currentTimeMillis())
     enemyNode.detachAllChildren()
@@ -286,8 +286,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       handleCollisions
     }, () => {
       if (System.currentTimeMillis() - player.getUserData(DieTime).asInstanceOf[Long] > 4000f) {
-        player.move(0, 0, 0)
-        player.move(settings.getWidth() / 2, settings.getHeight() / 2, 0)
+        player.setLocalTranslation(settings.getWidth() / 2, settings.getHeight() / 2, 0)
         guiNode.attachChild(player)
         player.setUserData(Alive, true)
       }
