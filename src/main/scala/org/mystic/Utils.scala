@@ -9,5 +9,5 @@ object Utils {
 
   def getVectorFromAngle(angle: Float): Vector3f = new Vector3f(FastMath.cos(angle), FastMath.sin(angle), 0)
 
-  def checkSpatialIsAlive(spatial: Spatial)(tr: Unit)(fal: Unit) = if (spatial.getUserData[Boolean](MyFirstGame.Alive)) tr else fal
+  def checkSpatialIsAlive(spatial: Spatial, tr: () => Unit, fal: () => Unit) = if (spatial.getUserData[Boolean](MyFirstGame.Alive)) tr.apply else fal.apply
 }
