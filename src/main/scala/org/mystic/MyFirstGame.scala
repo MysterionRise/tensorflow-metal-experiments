@@ -1,6 +1,7 @@
 package org.mystic
 
 import java.awt.GraphicsEnvironment
+import com.jme3.cursors.plugins.JmeCursor
 import com.jme3.system.AppSettings
 
 import scala.collection.JavaConversions._
@@ -15,7 +16,7 @@ import com.jme3.post.filters.BloomFilter
 import com.jme3.scene.{Node, Spatial}
 import com.jme3.texture.Texture2D
 import com.jme3.ui.Picture
-import org.mystic.controls.{BulletControl, PlayerControl, SeekerControl, WandererControl}
+import org.mystic.controls._
 import org.mystic.Utils._
 
 import scala.collection.immutable.HashSet
@@ -39,6 +40,12 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   private var enemySpawnCooldown: Long = _
   private var enemySpawnChance: Float = 80
+
+  private var blackHoleCooldown: Long = 0
+  private var blackHoleNode: Node = _
+
+  private var extraLifeNode: Node = _
+
   private var sound: SoundManager = _
 
   override def simpleInitApp(): Unit = {
@@ -76,12 +83,20 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     enemyNode = new Node("enemies")
     guiNode.attachChild(enemyNode)
 
+    blackHoleNode = new Node("blackholes")
+    guiNode.attachChild(blackHoleNode)
+
+    extraLifeNode = new Node("extralifes")
+    guiNode.attachChild(extraLifeNode)
+
     // add player
     player = getSpatial("Player")
     player.setUserData(Alive, true)
     player.move(settings.getWidth() / 2, settings.getHeight() / 2, 0)
     guiNode.attachChild(player)
     player.addControl(new PlayerControl(settings.getWidth(), settings.getHeight()))
+
+    inputManager.setMouseCursor(assetManager.loadAsset("Textures/Pointer.ico").asInstanceOf[JmeCursor]);
 
     // add bloom filter
     val fpp = new FilterPostProcessor(assetManager)
@@ -228,6 +243,14 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     enemyNode.attachChild(wanderer)
   }
 
+  def createBlackHole = {
+    val blackHole = getSpatial("BlackHole")
+    blackHole.setLocalTranslation(getSpawnPosition)
+    blackHole.addControl(new BlackHoleControl())
+    blackHole.setUserData("active", false)
+    blackHoleNode.attachChild(blackHole)
+  }
+
   def spawnEnemies = {
     if (System.currentTimeMillis() - enemySpawnCooldown >= 17) {
       enemySpawnCooldown = System.currentTimeMillis
@@ -248,6 +271,27 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     }
   }
 
+  def spawnBlackHoles = {
+    if (blackHoleNode.getQuantity < 5 && System.currentTimeMillis - blackHoleCooldown > 5000 && new Random().nextInt(1000) == 1) {
+      blackHoleCooldown = System.currentTimeMillis
+      createBlackHole
+    }
+  }
+
+  def createExtraLife = {
+    val extraLife = getSpatial("ExtraLife")
+    extraLife.setLocalTranslation(getSpawnPosition)
+    extraLife.addControl(new ExtraLifeControl())
+    extraLife.setUserData("active", false)
+    extraLifeNode.attachChild(extraLife)
+  }
+
+  def spawnExtraLife = {
+    if (extraLifeNode.getQuantity == 0 && new Random().nextInt(100) == 1) {
+      createExtraLife
+    }
+  }
+
 
   def checkCollision(a: Spatial, b: Spatial): Boolean = {
     val distance = a.getLocalTranslation().distance(b.getLocalTranslation())
@@ -259,8 +303,10 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     player.removeFromParent()
     player.getControl(0).asInstanceOf[PlayerControl].reset()
     player.setUserData(Alive, false)
-    player.setUserData(DieTime, System.currentTimeMillis())
-    enemyNode.detachAllChildren()
+    player.setUserData(DieTime, System.currentTimeMillis)
+    enemyNode.detachAllChildren
+    blackHoleNode.detachAllChildren
+    extraLifeNode.detachAllChildren
   }
 
   def handleCollisions = {
@@ -278,12 +324,83 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         }
       })
     })
+    blackHoleNode.getChildren.foreach(blackHole => {
+      if (checkCollision(blackHole, player)) {
+        killPlayer
+      }
+      enemyNode.getChildren.foreach(enemy => {
+        if (checkCollision(blackHole, enemy)) {
+          sound.explosion
+          enemyNode.detachChild(enemy)
+        }
+      })
+      bulletNode.getChildren.foreach(bullet => {
+        if (checkCollision(blackHole, bullet)) {
+          val control: BlackHoleControl = blackHole.getControl(0).asInstanceOf[BlackHoleControl]
+          control.takeShot
+          bulletNode.detachChild(bullet)
+          if (control.isDead) {
+            blackHoleNode.detachChild(blackHole)
+            sound.explosion
+          }
+
+        }
+      })
+    })
+    extraLifeNode.getChildren.foreach(extra => {
+      if (checkCollision(extra, player)) {
+        sound.extraLife
+        extraLifeNode.detachChild(extra)
+        // add extra life to player
+      }
+    })
+  }
+
+  def isNear(a: Spatial, b: Spatial): Boolean = {
+    val v1 = a.getLocalTranslation
+    val v2 = b.getLocalTranslation
+    // TODO change constant
+    v1.distanceSquared(v2) <= 700f * 700f
+  }
+
+  def applyGravity(blackHole: Spatial, target: Spatial, tpf: Float) = {
+    val gravity = blackHole.getLocalTranslation.subtract(target.getLocalTranslation)
+    val distance = gravity.length
+    gravity.divideLocal(distance * distance)
+
+    target.getName match {
+      case "Player" => target.getControl(0).asInstanceOf[PlayerControl].applyGravity(gravity.multLocal(150f))
+      case "Bullet" => target.getControl(0).asInstanceOf[BulletControl].applyGravity(gravity.multLocal(-0.99f))
+      case "Seeker" => target.getControl(0).asInstanceOf[SeekerControl].applyGravity(gravity.multLocal(40000f))
+      case "Wanderer" => target.getControl(0).asInstanceOf[WandererControl].applyGravity(gravity.multLocal(40000f))
+    }
+  }
+
+  def createGravity(tpf: Float): Unit = {
+    blackHoleNode.getChildren.foreach(blackHole => {
+      if (isNear(blackHole, player)) {
+        applyGravity(blackHole, player, tpf)
+      }
+      bulletNode.getChildren.foreach(bullet => {
+        if (isNear(blackHole, bullet)) {
+          applyGravity(blackHole, bullet, tpf)
+        }
+      })
+      enemyNode.getChildren.foreach(enemy => {
+        if (isNear(blackHole, enemy)) {
+          applyGravity(blackHole, enemy, tpf)
+        }
+      })
+    })
   }
 
   override def simpleUpdate(tpf: Float): Unit = {
     checkSpatialIsAlive(player, () => {
       spawnEnemies
+      spawnBlackHoles
       handleCollisions
+      spawnExtraLife
+      createGravity(tpf)
     }, () => {
       if (System.currentTimeMillis() - player.getUserData(DieTime).asInstanceOf[Long] > 4000f) {
         player.setLocalTranslation(settings.getWidth() / 2, settings.getHeight() / 2, 0)

@@ -1,6 +1,6 @@
 package org.mystic.controls
 
-import com.jme3.math.FastMath
+import com.jme3.math.{Vector3f, FastMath}
 import com.jme3.renderer.{RenderManager, ViewPort}
 import com.jme3.scene.control.AbstractControl
 import org.mystic.MyFirstGame
@@ -51,5 +51,9 @@ class PlayerControl(screenWidth: Int, screenHeight: Int) extends AbstractControl
       spatial.rotate(0, 0, -lastRotation + 0)
       lastRotation = 0
     }
+  }
+
+  def applyGravity(vector3f: Vector3f) = {
+    spatial.move(vector3f)
   }
 }

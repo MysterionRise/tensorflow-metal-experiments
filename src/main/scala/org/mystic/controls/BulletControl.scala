@@ -7,6 +7,10 @@ import org.mystic.Utils
 
 class BulletControl(direction: Vector3f, screenWidth: Int, screenHeight: Int) extends AbstractControl {
 
+  def applyGravity(gravity: Vector3f) = {
+    direction.addLocal(gravity)
+  }
+
   private val speed = 1000f
   private var rotation: Float = _
 

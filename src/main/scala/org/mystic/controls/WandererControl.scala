@@ -55,4 +55,8 @@ class WandererControl(width: Int, height: Int) extends AbstractControl {
       pic.getMaterial().setColor("Color", color)
     })
   }
+
+  def applyGravity(gravity: Vector3f) = {
+    velocity.addLocal(gravity)
+  }
 }
