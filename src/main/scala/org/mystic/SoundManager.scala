@@ -7,10 +7,11 @@ import scala.util.Random
 
 class SoundManager(assetManager: AssetManager) {
 
-  val shots = new Array[AudioNode](4)
-  val explosions = new Array[AudioNode](8)
-  val spawns = new Array[AudioNode](8)
-  var music: AudioNode = _
+  private val shots = new Array[AudioNode](4)
+  private val explosions = new Array[AudioNode](8)
+  private val spawns = new Array[AudioNode](8)
+  private var music: AudioNode = _
+  private var extraLifeSound: AudioNode = _
   loadSounds
 
 
@@ -19,6 +20,11 @@ class SoundManager(assetManager: AssetManager) {
     music.setPositional(false)
     music.setReverbEnabled(false)
     music.setLooping(true)
+
+    extraLifeSound = new AudioNode(assetManager, "Sounds/extralife.wav")
+    extraLifeSound.setPositional(false)
+    extraLifeSound.setReverbEnabled(false)
+    extraLifeSound.setLooping(false)
 
     for (i <- 0 until shots.length) {
       val node: AudioNode = new AudioNode(assetManager, s"Sounds/shoot-0${i + 1}.wav")
@@ -52,5 +58,7 @@ class SoundManager(assetManager: AssetManager) {
   def explosion = explosions(new Random().nextInt(explosions.length)).playInstance()
 
   def spawn = spawns(new Random().nextInt(spawns.length)).playInstance()
+
+  def extraLife = extraLifeSound.play
 
 }
