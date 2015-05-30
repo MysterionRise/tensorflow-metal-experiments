@@ -156,7 +156,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
     // set the radius of the spatial
     // (using width only as a simple approximation)
-    node.setUserData(Radius, (width / 2.0f).toFloat)
+    node.setUserData(Radius, (width / 2.0f))
 
     // attach the picture to the node and return it
     node.attachChild(pic)
