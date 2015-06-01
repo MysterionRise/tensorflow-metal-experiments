@@ -101,6 +101,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     inputManager.setMouseCursor(assetManager.loadAsset("Textures/Pointer.ico").asInstanceOf[JmeCursor])
 
     hud = new Hud(assetManager, guiNode, settings.getWidth(), settings.getHeight())
+    hud.loadFont
     hud.reset
 
     // add bloom filter

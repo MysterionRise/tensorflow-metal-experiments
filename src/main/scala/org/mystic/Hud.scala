@@ -16,24 +16,28 @@ class Hud(assetManager: AssetManager, guiNode: Node, width: Int, height: Int) {
 
   def addLife = lives += 1
 
+  def loadFont = {
+    val guiFont = assetManager.loadFont("Interface/Fonts/SaucerBB.fnt")
+    livesText = new BitmapText(guiFont, false)
+    livesText.setLocalTranslation(30, height - 30, 0)
+    livesText.setSize(fontSize)
+    livesText.setText("Lives: " + lives)
+    guiNode.attachChild(livesText)
 
-  val guiFont = assetManager.loadFont("Interface/Fonts/SaucerBB.ttf")
+    val scoreText = new BitmapText(guiFont, true)
+    scoreText.setLocalTranslation(width - 200, height - 30, 0)
+    scoreText.setSize(fontSize)
+    scoreText.setText("Score: " + score)
+    guiNode.attachChild(scoreText)
+  }
+
   val fontSize = 10
+  var livesText: BitmapText = _
+  var scoreText: BitmapText = _
 
   var lives = 1
   var score = 0
 
-  val livesText = new BitmapText(guiFont, false)
-  livesText.setLocalTranslation(30, height - 30, 0)
-  livesText.setSize(fontSize)
-  livesText.setText("Lives: " + lives)
-  guiNode.attachChild(livesText)
-
-  val scoreText = new BitmapText(guiFont, true)
-  scoreText.setLocalTranslation(width - 200, height - 30, 0)
-  scoreText.setSize(fontSize)
-  scoreText.setText("Score: " + score)
-  guiNode.attachChild(scoreText)
 
   def updateHUD = {
     scoreText.setText("Score: " + score)
