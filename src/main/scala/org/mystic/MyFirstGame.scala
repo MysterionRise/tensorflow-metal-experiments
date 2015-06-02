@@ -48,6 +48,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   private var sound: SoundManager = _
 
+  private var hud: Hud = _
+
   override def simpleInitApp(): Unit = {
     // create sounds manager
     sound = new SoundManager(assetManager)
@@ -96,7 +98,11 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     guiNode.attachChild(player)
     player.addControl(new PlayerControl(settings.getWidth(), settings.getHeight()))
 
-    inputManager.setMouseCursor(assetManager.loadAsset("Textures/Pointer.ico").asInstanceOf[JmeCursor]);
+    inputManager.setMouseCursor(assetManager.loadAsset("Textures/Pointer.ico").asInstanceOf[JmeCursor])
+
+    hud = new Hud(assetManager, guiNode, settings.getWidth(), settings.getHeight())
+    hud.loadFont
+    hud.reset
 
     // add bloom filter
     val fpp = new FilterPostProcessor(assetManager)
@@ -156,7 +162,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
     // set the radius of the spatial
     // (using width only as a simple approximation)
-    node.setUserData(Radius, (width / 2.0f).toFloat)
+    node.setUserData(Radius, (width / 2.0f))
 
     // attach the picture to the node and return it
     node.attachChild(pic)
@@ -321,6 +327,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
           sound.explosion
           enemyNode.detachChild(enemy)
           bulletNode.detachChild(bullet)
+          hud.addPoint
         }
       })
     })
@@ -351,6 +358,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       if (checkCollision(extra, player)) {
         sound.extraLife
         extraLifeNode.detachChild(extra)
+        hud.addLife
         // add extra life to player
       }
     })
@@ -401,8 +409,10 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       handleCollisions
       spawnExtraLife
       createGravity(tpf)
+      hud.updateHUD
     }, () => {
       if (System.currentTimeMillis() - player.getUserData(DieTime).asInstanceOf[Long] > 4000f) {
+        hud.reset
         player.setLocalTranslation(settings.getWidth() / 2, settings.getHeight() / 2, 0)
         guiNode.attachChild(player)
         player.setUserData(Alive, true)
