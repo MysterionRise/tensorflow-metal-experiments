@@ -4,7 +4,7 @@ apply plugin: 'java'
 apply plugin: 'scala'
 apply plugin: 'idea'
 
-version = '0.01'
+version = '0.10'
 
 sourceSets {
     main {
