@@ -367,7 +367,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   def isNear(a: Spatial, b: Spatial): Boolean = {
     val v1 = a.getLocalTranslation
     val v2 = b.getLocalTranslation
-    // TODO change constant
+    // TODO change constant depending on size of screen
     v1.distanceSquared(v2) <= 700f * 700f
   }
 
@@ -412,7 +412,12 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       hud.updateHUD
     }, () => {
       if (System.currentTimeMillis() - player.getUserData(DieTime).asInstanceOf[Long] > 4000f) {
-        hud.reset
+        if (hud.lives > 0) {
+          hud.removeLife
+        } else {
+          // todo save high score
+          hud.reset
+        }
         player.setLocalTranslation(settings.getWidth() / 2, settings.getHeight() / 2, 0)
         guiNode.attachChild(player)
         player.setUserData(Alive, true)
