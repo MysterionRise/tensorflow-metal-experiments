@@ -1,6 +1,7 @@
 package org.mystic
 
 import java.awt.GraphicsEnvironment
+import java.io.{PrintWriter, BufferedReader, File, FileReader}
 import com.jme3.cursors.plugins.JmeCursor
 import com.jme3.system.AppSettings
 
@@ -402,6 +403,26 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     })
   }
 
+  def loadHighScore: Int = {
+    try {
+      val reader = new FileReader(new File("highscore"))
+      val buff = new BufferedReader(reader)
+      return Integer.valueOf(buff.readLine())
+    } catch {
+      case e: Exception => e.printStackTrace()
+    }
+    return 0
+  }
+
+  def saveHighScore(score: Int) = {
+    try {
+      val writer = new PrintWriter(new File("highscore"))
+      writer.write(String.valueOf(score))
+    } catch {
+      case e: Exception => e.printStackTrace()
+    }
+  }
+
   override def simpleUpdate(tpf: Float): Unit = {
     checkSpatialIsAlive(player, () => {
       spawnEnemies
@@ -417,6 +438,11 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         } else {
           // todo save high score
           // game ends
+          val highScore = loadHighScore
+          if (hud.score > highScore) {
+            // todo show some message
+            saveHighScore(hud.score)
+          }
           hud.reset
         }
         player.setLocalTranslation(settings.getWidth() / 2, settings.getHeight() / 2, 0)
