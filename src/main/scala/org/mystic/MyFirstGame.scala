@@ -416,6 +416,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
           hud.removeLife
         } else {
           // todo save high score
+          // game ends
           hud.reset
         }
         player.setLocalTranslation(settings.getWidth() / 2, settings.getHeight() / 2, 0)
