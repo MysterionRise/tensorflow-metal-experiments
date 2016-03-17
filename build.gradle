@@ -1,16 +1,12 @@
 defaultTasks 'build', 'runJar'
 
-apply plugin: 'java'
 apply plugin: 'scala'
 apply plugin: 'idea'
 
-version = '0.10'
+version = '0.1'
 
 sourceSets {
     main {
-        java {
-            srcDir 'src/main/java'
-        }
         scala {
             srcDir 'src/main/scala'
         }
