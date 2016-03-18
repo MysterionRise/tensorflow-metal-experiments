@@ -436,11 +436,11 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         if (hud.lives > 0) {
           hud.removeLife
         } else {
-          // todo save high score
           // game ends
           val highScore = loadHighScore
           if (hud.score > highScore) {
             // todo show some message
+            hud.showBeatingHighScoreMessage
             saveHighScore(hud.score)
           }
           hud.reset
