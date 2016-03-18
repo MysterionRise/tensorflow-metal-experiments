@@ -32,6 +32,10 @@ class Hud(assetManager: AssetManager, guiNode: Node, width: Int, height: Int) {
     guiNode.attachChild(scoreText)
   }
 
+  def showBeatingHighScoreMessage = {
+    // todo create something
+  }
+
   val fontSize = 35
   var livesText: BitmapText = _
   var scoreText: BitmapText = _
