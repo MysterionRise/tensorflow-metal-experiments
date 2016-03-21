@@ -418,6 +418,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     try {
       val writer = new PrintWriter(new File("highscore"))
       writer.write(String.valueOf(score))
+      writer.close()
     } catch {
       case e: Exception => e.printStackTrace()
     }
@@ -439,6 +440,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
           // game ends
           val highScore = loadHighScore
           if (hud.score > highScore) {
+            println("You beat it!")
             // todo show some message
             hud.showBeatingHighScoreMessage
             saveHighScore(hud.score)
