@@ -36,9 +36,59 @@ class Hud(assetManager: AssetManager, guiNode: Node, width: Int, height: Int) {
     // todo create something
   }
 
+  /**
+    * public void endGame() {
+    // init gameOverNode
+    gameOverNode = new Node();
+    gameOverNode.setLocalTranslation(screenWidth/2 - 180, screenHeight/2 + 100,0);
+    guiNode.attachChild(gameOverNode);
+
+    // check highscore
+    int highscore = loadHighscore();
+    if (score > highscore) {saveHighscore();}
+
+    // init and display text
+    BitmapText gameOverText = new BitmapText(guiFont, false);
+    gameOverText.setLocalTranslation(0,0,0);
+    gameOverText.setSize(fontSize);
+    gameOverText.setText("Game Over");
+    gameOverNode.attachChild(gameOverText);
+
+    BitmapText yourScoreText = new BitmapText(guiFont, false);
+    yourScoreText.setLocalTranslation(0,-50,0);
+    yourScoreText.setSize(fontSize);
+    yourScoreText.setText("Your Score: "+score);
+    gameOverNode.attachChild(yourScoreText);
+
+    BitmapText highscoreText = new BitmapText(guiFont, false);
+    highscoreText.setLocalTranslation(0,-100,0);
+    highscoreText.setSize(fontSize);
+    highscoreText.setText("Highscore: "+highscore);
+    gameOverNode.attachChild(highscoreText);
+}
+    * @return
+    */
+
+  def endGame = {
+    guiNode.detachAllChildren()
+    val gameOverNode = new Node()
+    gameOverNode.setLocalTranslation(width / 2 - 180, height / 2 + 100, 0)
+    guiNode.attachChild(gameOverNode)
+//    val highscore = loadHighscore()
+//    if (score > highscore) saveHighscore()
+
+    val guiFont = assetManager.loadFont("Interface/output-saucerbb-2048.fnt")
+    endGameResponse = new BitmapText(guiFont, false)
+    endGameResponse.setLocalTranslation(0, 0, 0)
+    endGameResponse.setSize(fontSize * 2)
+    endGameResponse.setText("GAME OVER")
+    gameOverNode.attachChild(endGameResponse)
+  }
+
   val fontSize = 35
   var livesText: BitmapText = _
   var scoreText: BitmapText = _
+  var endGameResponse: BitmapText = _
 
   var lives = 1
   var score = 0
