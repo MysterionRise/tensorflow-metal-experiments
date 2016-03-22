@@ -3,9 +3,9 @@ package org.mystic.controls
 import com.jme3.math.Vector3f
 import com.jme3.renderer.{RenderManager, ViewPort}
 import com.jme3.scene.control.AbstractControl
-import org.mystic.Utils
+import org.mystic.{ParticleManager, Utils}
 
-class BulletControl(direction: Vector3f, screenWidth: Int, screenHeight: Int) extends AbstractControl {
+class BulletControl(direction: Vector3f, screenWidth: Int, screenHeight: Int, particleManager: ParticleManager) extends AbstractControl {
 
   def applyGravity(gravity: Vector3f) = {
     direction.addLocal(gravity)
@@ -33,6 +33,7 @@ class BulletControl(direction: Vector3f, screenWidth: Int, screenHeight: Int) ex
       loc.y > screenHeight ||
       loc.x < 0 ||
       loc.y < 0) {
+      particleManager.bulletExplosion(loc)
       spatial.removeFromParent()
     }
   }
