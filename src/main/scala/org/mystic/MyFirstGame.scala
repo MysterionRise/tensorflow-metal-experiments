@@ -111,8 +111,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     hud.reset
 
     //create particle manager
-    particleManager = new ParticleManager(guiNode, getSpatial("Laser"), getSpatial("Glow"));
-
+    particleManager = new ParticleManager(guiNode, getSpatial("Laser"), getSpatial("Glow"))
 
     // add bloom filter
     val fpp = new FilterPostProcessor(assetManager)
@@ -211,7 +210,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       var finalOffset = aim.add(offset).mult(30)
       var trans = player.getLocalTranslation().add(finalOffset)
       bullet.setLocalTranslation(trans)
-      bullet.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight()))
+      bullet.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight(), particleManager))
       bulletNode.attachChild(bullet)
 
       //                    init bullet 2
@@ -219,7 +218,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       finalOffset = aim.add(offset.negate()).mult(30)
       trans = player.getLocalTranslation().add(finalOffset)
       bullet2.setLocalTranslation(trans)
-      bullet2.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight()))
+      bullet2.addControl(new BulletControl(aim, settings.getWidth(), settings.getHeight(), particleManager))
       bulletNode.attachChild(bullet2)
     }
   }
@@ -316,6 +315,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   def killPlayer = {
+    particleManager.playerExplosion(player.getLocalTranslation())
     player.removeFromParent()
     player.getControl(0).asInstanceOf[PlayerControl].reset()
     player.setUserData(Alive, false)
