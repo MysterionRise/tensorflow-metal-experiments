@@ -54,6 +54,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   private var hud: Hud = _
 
+  private var particleManager: ParticleManager = _
+
   override def simpleInitApp(): Unit = {
     // create sounds manager
     sound = new SoundManager(assetManager)
@@ -107,6 +109,10 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     hud = new Hud(assetManager, guiNode, settings.getWidth(), settings.getHeight())
     hud.loadFont
     hud.reset
+
+    //create particle manager
+    particleManager = new ParticleManager(guiNode, getSpatial("Laser"), getSpatial("Glow"));
+
 
     // add bloom filter
     val fpp = new FilterPostProcessor(assetManager)
@@ -328,6 +334,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       }, () => {})
       bulletNode.getChildren.foreach(bullet => {
         if (checkCollision(enemy, bullet)) {
+          particleManager.enemyExplosion(enemy.getLocalTranslation())
           sound.explosion
           enemyNode.detachChild(enemy)
           bulletNode.detachChild(bullet)
@@ -343,6 +350,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         if (checkCollision(blackHole, enemy)) {
           sound.explosion
           enemyNode.detachChild(enemy)
+          particleManager.enemyExplosion(enemy.getLocalTranslation())
         }
       })
       bulletNode.getChildren.foreach(bullet => {
