@@ -406,27 +406,6 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     })
   }
 
-  def loadHighScore: Int = {
-    try {
-      val reader = new FileReader(new File("highscore"))
-      val buff = new BufferedReader(reader)
-      return Integer.valueOf(buff.readLine())
-    } catch {
-      case e: Exception => e.printStackTrace()
-    }
-    return 0
-  }
-
-  def saveHighScore(score: Int) = {
-    try {
-      val writer = new PrintWriter(new File("highscore"))
-      writer.write(String.valueOf(score))
-      writer.close()
-    } catch {
-      case e: Exception => e.printStackTrace()
-    }
-  }
-
   override def simpleUpdate(tpf: Float): Unit = {
     checkSpatialIsAlive(player, () => {
       spawnEnemies
@@ -439,22 +418,13 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       if (System.currentTimeMillis() - player.getUserData(DieTime).asInstanceOf[Long] > 4000f && !gameOver) {
         if (hud.lives > 0) {
           hud.removeLife
+          player.setLocalTranslation(settings.getWidth() / 2, settings.getHeight() / 2, 0)
+          guiNode.attachChild(player)
+          player.setUserData(Alive, true)
         } else {
           hud.endGame
           gameOver = true
-          // game ends
-          val highScore = loadHighScore
-          if (hud.score > highScore) {
-            println("You beat it!")
-            // todo show some message
-            hud.showBeatingHighScoreMessage
-            saveHighScore(hud.score)
-          }
-          //          hud.reset
         }
-        player.setLocalTranslation(settings.getWidth() / 2, settings.getHeight() / 2, 0)
-        guiNode.attachChild(player)
-        player.setUserData(Alive, true)
       }
     })
   }
