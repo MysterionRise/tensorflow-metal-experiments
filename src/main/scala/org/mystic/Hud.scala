@@ -1,5 +1,7 @@
 package org.mystic
 
+import java.io.{PrintWriter, BufferedReader, File, FileReader}
+
 import com.jme3.asset.AssetManager
 import com.jme3.font.BitmapText
 import com.jme3.scene.Node
@@ -32,53 +34,47 @@ class Hud(assetManager: AssetManager, guiNode: Node, width: Int, height: Int) {
     guiNode.attachChild(scoreText)
   }
 
-  def showBeatingHighScoreMessage = {
-    // todo create something
+  // todo make it more proper
+  def loadHighScore: Int = {
+    try {
+      val reader = new FileReader(new File("highscore"))
+      val buff = new BufferedReader(reader)
+      return Integer.valueOf(buff.readLine())
+    } catch {
+      case e: Exception => e.printStackTrace()
+    }
+    return 0
   }
 
-  /**
-    * public void endGame() {
-    // init gameOverNode
-    gameOverNode = new Node();
-    gameOverNode.setLocalTranslation(screenWidth/2 - 180, screenHeight/2 + 100,0);
-    guiNode.attachChild(gameOverNode);
-
-    // check highscore
-    int highscore = loadHighscore();
-    if (score > highscore) {saveHighscore();}
-
-    // init and display text
-    BitmapText gameOverText = new BitmapText(guiFont, false);
-    gameOverText.setLocalTranslation(0,0,0);
-    gameOverText.setSize(fontSize);
-    gameOverText.setText("Game Over");
-    gameOverNode.attachChild(gameOverText);
-
-    BitmapText yourScoreText = new BitmapText(guiFont, false);
-    yourScoreText.setLocalTranslation(0,-50,0);
-    yourScoreText.setSize(fontSize);
-    yourScoreText.setText("Your Score: "+score);
-    gameOverNode.attachChild(yourScoreText);
-
-    BitmapText highscoreText = new BitmapText(guiFont, false);
-    highscoreText.setLocalTranslation(0,-100,0);
-    highscoreText.setSize(fontSize);
-    highscoreText.setText("Highscore: "+highscore);
-    gameOverNode.attachChild(highscoreText);
-}
-    * @return
-    */
+  // todo fix it
+  def saveHighScore(score: Int) = {
+    try {
+      val writer = new PrintWriter(new File("highscore"))
+      writer.write(String.valueOf(score))
+      writer.close()
+    } catch {
+      case e: Exception => e.printStackTrace()
+    }
+  }
 
   def endGame = {
     guiNode.detachAllChildren()
     val gameOverNode = new Node()
-    gameOverNode.setLocalTranslation(width / 2 - 180, height / 2 + 100, 0)
+    gameOverNode.setLocalTranslation(width / 2 - 200, height / 2 + 100, 0)
     guiNode.attachChild(gameOverNode)
-//    val highscore = loadHighscore()
-//    if (score > highscore) saveHighscore()
 
     val guiFont = assetManager.loadFont("Interface/output-saucerbb-2048.fnt")
-    endGameResponse = new BitmapText(guiFont, false)
+    val highScore = loadHighScore
+    if (score > highScore) {
+      val highScore = new BitmapText(guiFont, false)
+      highScore.setLocalTranslation(-60, -60, 0)
+      highScore.setSize(fontSize * 2)
+      highScore.setText("Your score: " + score)
+      gameOverNode.attachChild(highScore)
+      saveHighScore(score)
+    }
+
+    val endGameResponse = new BitmapText(guiFont, false)
     endGameResponse.setLocalTranslation(0, 0, 0)
     endGameResponse.setSize(fontSize * 2)
     endGameResponse.setText("GAME OVER")
@@ -88,7 +84,6 @@ class Hud(assetManager: AssetManager, guiNode: Node, width: Int, height: Int) {
   val fontSize = 35
   var livesText: BitmapText = _
   var scoreText: BitmapText = _
-  var endGameResponse: BitmapText = _
 
   var lives = 1
   var score = 0
