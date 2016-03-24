@@ -99,4 +99,63 @@ class ParticleManager(guiNode: Node, standardParticle: Spatial, glowParticle: Sp
       guiNode.getChild("particles").asInstanceOf[Node].attachChild(particle)
     }
   }
+
+  def makeExhaustFire(position: Vector3f, rotation: Float, spawnTime: Long) = {
+    val midColor = new ColorRGBA(1f, 0.73f, 0.12f, 0.7f)
+    val sideColor = new ColorRGBA(0.78f, 0.15f, 0.04f, 0.7f)
+
+    val direction = Utils.getVectorFromAngle(rotation)
+
+    val t = (System.currentTimeMillis() - spawnTime) / 1000f
+    val baseVel = direction.mult(-45f)
+    val perpVel = new Vector3f(baseVel.y, -baseVel.x, 0).multLocal(2f * FastMath.sin(t * 10f))
+
+    val pos = position.add(Utils.getVectorFromAngle(rotation).multLocal(-25f))
+
+    //middle stream
+    val randVec = Utils.getVectorFromAngle(new Random().nextFloat() * FastMath.PI * 2)
+    val velMid = baseVel.add(randVec.mult(7.5f))
+    val particleMid = standardParticle.clone()
+    particleMid.setLocalTranslation(pos)
+    particleMid.addControl(new ParticleControl(velMid, 800, midColor))
+    particleMid.setUserData("affectedByGravity", true)
+    guiNode.getChild("particles").asInstanceOf[Node].attachChild(particleMid)
+
+    val particleMidGlow = glowParticle.clone()
+    particleMidGlow.setLocalTranslation(pos)
+    particleMidGlow.addControl(new ParticleControl(velMid, 800, midColor))
+    particleMidGlow.setUserData("affectedByGravity", true)
+    guiNode.getChild("particles").asInstanceOf[Node].attachChild(particleMidGlow)
+
+    //side streams
+    val randVec1 = Utils.getVectorFromAngle(new Random().nextFloat() * FastMath.PI * 2)
+    val randVec2 = Utils.getVectorFromAngle(new Random().nextFloat() * FastMath.PI * 2)
+    val velSide1 = baseVel.add(randVec1.mult(2.4f)).addLocal(perpVel)
+    val velSide2 = baseVel.add(randVec2.mult(2.4f)).subtractLocal(perpVel)
+
+    val particleSide1 = standardParticle.clone()
+    particleSide1.setLocalTranslation(pos)
+    particleSide1.addControl(new ParticleControl(velSide1, 800, sideColor))
+    particleSide1.setUserData("affectedByGravity", true)
+    guiNode.getChild("particles").asInstanceOf[Node].attachChild(particleSide1)
+
+    val particleSide2 = standardParticle.clone()
+    particleSide2.setLocalTranslation(pos)
+    particleSide2.addControl(new ParticleControl(velSide2, 800, sideColor))
+    particleSide2.setUserData("affectedByGravity", true)
+    guiNode.getChild("particles").asInstanceOf[Node].attachChild(particleSide2)
+
+    val particleSide1Glow = glowParticle.clone()
+    particleSide1Glow.setLocalTranslation(pos)
+    particleSide1Glow.addControl(new ParticleControl(velSide1, 800, sideColor))
+    particleSide1Glow.setUserData("affectedByGravity", true)
+    guiNode.getChild("particles").asInstanceOf[Node].attachChild(particleSide1Glow)
+
+    val particleSide2Glow = glowParticle.clone()
+    particleSide2Glow.setLocalTranslation(pos)
+    particleSide2Glow.addControl(new ParticleControl(velSide2, 800, sideColor))
+    particleSide2Glow.setUserData("affectedByGravity", true)
+    guiNode.getChild("particles").asInstanceOf[Node].attachChild(particleSide2Glow)
+
+  }
 }
