@@ -42,6 +42,8 @@ class ParticleManager(guiNode: Node, standardParticle: Spatial, glowParticle: Sp
   guiNode.attachChild(particleNode)
   val random = new Random()
 
+  def getParticleNode = particleNode
+
   def enemyExplosion(position: Vector3f) = {
     val hue1 = random.nextFloat() * 6
     val hue2 = (random.nextFloat() * 2) % 6f
