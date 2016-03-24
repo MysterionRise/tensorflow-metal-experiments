@@ -11,9 +11,10 @@ class Hud(assetManager: AssetManager, guiNode: Node, width: Int, height: Int) {
   def reset = {
     lives = 1
     score = 0
+    multiplier = 1
   }
 
-  def addPoint = score += 1
+  def addPoint = score += multiplier
 
   def removeLife = lives -= 1
 
@@ -28,10 +29,16 @@ class Hud(assetManager: AssetManager, guiNode: Node, width: Int, height: Int) {
     guiNode.attachChild(livesText)
 
     scoreText = new BitmapText(guiFont, true)
-    scoreText.setLocalTranslation(width - 200, height - 30, 0)
+    scoreText.setLocalTranslation(width - 300, height - 30, 0)
     scoreText.setSize(fontSize)
     scoreText.setText("SCORE: " + score)
     guiNode.attachChild(scoreText)
+
+    multiplierText = new BitmapText(guiFont, true)
+    multiplierText.setLocalTranslation(width - 300, height - 70, 0)
+    multiplierText.setSize(fontSize)
+    multiplierText.setText("MULTIPLIER: " + multiplier)
+    guiNode.attachChild(multiplierText)
   }
 
   // todo make it more proper
@@ -84,13 +91,29 @@ class Hud(assetManager: AssetManager, guiNode: Node, width: Int, height: Int) {
   val fontSize = 35
   var livesText: BitmapText = _
   var scoreText: BitmapText = _
+  var multiplierText: BitmapText = _
 
   var lives = 1
   var score = 0
+  var multiplier = 1
+  var multiplierTimStamp = 0L
+
+  def addMultiplier = {
+    multiplier += 1
+    multiplierTimStamp = System.currentTimeMillis()
+  }
 
 
   def updateHUD = {
+    if (System.currentTimeMillis() - multiplierTimStamp > 1000 && multiplier > 1) {
+      multiplier = multiplier / 2
+      if (multiplier == 0) {
+        multiplier = 1
+      }
+      multiplierTimStamp = System.currentTimeMillis()
+    }
     scoreText.setText("SCORE: " + score)
     livesText.setText("LIVES: " + lives)
+    multiplierText.setText("MULTIPLIER: " + multiplier)
   }
 }
