@@ -393,6 +393,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       case "Bullet" => target.getControl(0).asInstanceOf[BulletControl].applyGravity(gravity.multLocal(-0.99f))
       case "Seeker" => target.getControl(0).asInstanceOf[SeekerControl].applyGravity(gravity.multLocal(40000f))
       case "Wanderer" => target.getControl(0).asInstanceOf[WandererControl].applyGravity(gravity.multLocal(40000f))
+      case "Laser" => target.getControl(0).asInstanceOf[ParticleControl].applyGravity(gravity.mult(15000f), distance)
+      case "Glow" => target.getControl(0).asInstanceOf[ParticleControl].applyGravity(gravity.mult(15000f), distance)
     }
   }
 
@@ -405,6 +407,9 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         if (isNear(blackHole, bullet)) {
           applyGravity(blackHole, bullet, tpf)
         }
+      })
+      particleManager.getParticleNode.getChildren.filter(p => p.getUserData("affectedByGravity").asInstanceOf[Boolean]).foreach(particle => {
+        applyGravity(blackHole, particle, tpf)
       })
       enemyNode.getChildren.foreach(enemy => {
         if (isNear(blackHole, enemy)) {
