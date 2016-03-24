@@ -101,12 +101,15 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
     spawnTime = System.currentTimeMillis()
 
+    //create particle manager
+    particleManager = new ParticleManager(guiNode, getSpatial("Laser"), getSpatial("Glow"))
+
     // add player
     player = getSpatial("Player")
     player.setUserData(Alive, true)
     player.move(settings.getWidth() / 2, settings.getHeight() / 2, 0)
     guiNode.attachChild(player)
-    player.addControl(new PlayerControl(settings.getWidth(), settings.getHeight()))
+    player.addControl(new PlayerControl(settings.getWidth(), settings.getHeight(), particleManager))
 
     inputManager.setMouseCursor(assetManager.loadAsset("Textures/Pointer.ico").asInstanceOf[JmeCursor])
 
@@ -114,8 +117,6 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     hud.loadFont
     hud.reset
 
-    //create particle manager
-    particleManager = new ParticleManager(guiNode, getSpatial("Laser"), getSpatial("Glow"))
 
     // add bloom filter
     val fpp = new FilterPostProcessor(assetManager)
@@ -345,6 +346,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
           enemyNode.detachChild(enemy)
           bulletNode.detachChild(bullet)
           hud.addPoint
+          hud.addMultiplier
         }
       })
     })
@@ -396,7 +398,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     gravity.divideLocal(distance * distance)
 
     target.getName match {
-      case "Player" => target.getControl(0).asInstanceOf[PlayerControl].applyGravity(gravity.multLocal(150f))
+      case "Player" => target.getControl(0).asInstanceOf[PlayerControl].applyGravity(gravity.multLocal(500f))
       case "Bullet" => target.getControl(0).asInstanceOf[BulletControl].applyGravity(gravity.multLocal(-0.99f))
       case "Seeker" => target.getControl(0).asInstanceOf[SeekerControl].applyGravity(gravity.multLocal(40000f))
       case "Wanderer" => target.getControl(0).asInstanceOf[WandererControl].applyGravity(gravity.multLocal(40000f))
@@ -438,6 +440,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
       if (System.currentTimeMillis() - player.getUserData(DieTime).asInstanceOf[Long] > 4000f && !gameOver) {
         if (hud.lives > 0) {
           hud.removeLife
+          hud.multiplier = 1
           player.setLocalTranslation(settings.getWidth() / 2, settings.getHeight() / 2, 0)
           guiNode.attachChild(player)
           player.setUserData(Alive, true)
