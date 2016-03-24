@@ -68,8 +68,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     getFlyByCamera().setEnabled(false)
 
     // turn off stats view
-    setDisplayStatView(false)
-    setDisplayFps(false)
+    //    setDisplayStatView(false)
+    //    setDisplayFps(false)
 
     // add listener for keyboard
     inputManager.addMapping(Left, new KeyTrigger(KeyInput.KEY_LEFT))
@@ -294,7 +294,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   def spawnBlackHoles = {
-    if (blackHoleNode.getQuantity < 5 && System.currentTimeMillis - blackHoleCooldown > 5000 && new Random().nextInt(1000) == 1) {
+    if (blackHoleNode.getQuantity < 10 && System.currentTimeMillis - blackHoleCooldown > 5000 && new Random().nextInt(500) == 1) {
       blackHoleCooldown = System.currentTimeMillis
       createBlackHole
     }
@@ -368,6 +368,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
           particleManager.blackHoleExplosion(blackHole.getLocalTranslation, spawnTime)
           bulletNode.detachChild(bullet)
           if (control.isDead) {
+            hud.addPointForBlackHole
+            hud.addMultiplier
             blackHoleNode.detachChild(blackHole)
             sound.explosion
           }
