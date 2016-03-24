@@ -38,6 +38,16 @@ class ParticleControl(var velocity: Vector3f, lifespan: Float, color: ColorRGBA)
     }
   }
 
+  def applyGravity(gravity: Vector3f, distance: Float) = {
+    var additionalVelocity = gravity.mult(1000f / (distance * distance + 10000f))
+    velocity.addLocal(additionalVelocity)
+
+    if (distance < 400) {
+      additionalVelocity = new Vector3f(gravity.y, -gravity.x, 0).mult(3f / (distance + 100))
+      velocity.addLocal(additionalVelocity)
+    }
+  }
+
   def lesserValue(a: Float, b: Float) = {
     if (a < b)
       a
