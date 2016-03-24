@@ -56,6 +56,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
   private var particleManager: ParticleManager = _
 
+  private var spawnTime = 0L
+
   override def simpleInitApp(): Unit = {
     // create sounds manager
     sound = new SoundManager(assetManager)
@@ -96,6 +98,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
 
     extraLifeNode = new Node("extralifes")
     guiNode.attachChild(extraLifeNode)
+
+    spawnTime = System.currentTimeMillis()
 
     // add player
     player = getSpatial("Player")
@@ -261,7 +265,9 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   def createBlackHole = {
     val blackHole = getSpatial("BlackHole")
     blackHole.setLocalTranslation(getSpawnPosition)
-    blackHole.addControl(new BlackHoleControl())
+    val control: BlackHoleControl = new BlackHoleControl()
+    control.setParticleManager(particleManager)
+    blackHole.addControl(control)
     blackHole.setUserData("active", false)
     blackHoleNode.attachChild(blackHole)
   }
@@ -357,6 +363,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         if (checkCollision(blackHole, bullet)) {
           val control: BlackHoleControl = blackHole.getControl(0).asInstanceOf[BlackHoleControl]
           control.takeShot
+          particleManager.blackHoleExplosion(blackHole.getLocalTranslation, spawnTime)
           bulletNode.detachChild(bullet)
           if (control.isDead) {
             blackHoleNode.detachChild(blackHole)
