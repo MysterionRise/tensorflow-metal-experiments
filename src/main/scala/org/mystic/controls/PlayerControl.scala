@@ -3,9 +3,9 @@ package org.mystic.controls
 import com.jme3.math.{Vector3f, FastMath}
 import com.jme3.renderer.{RenderManager, ViewPort}
 import com.jme3.scene.control.AbstractControl
-import org.mystic.MyFirstGame
+import org.mystic.{ParticleManager, MyFirstGame}
 
-class PlayerControl(screenWidth: Int, screenHeight: Int) extends AbstractControl {
+class PlayerControl(screenWidth: Int, screenHeight: Int, particleManager: ParticleManager) extends AbstractControl {
 
   def reset() = {
     up = false
@@ -50,6 +50,9 @@ class PlayerControl(screenWidth: Int, screenHeight: Int) extends AbstractControl
       }
       spatial.rotate(0, 0, -lastRotation + 0)
       lastRotation = 0
+    }
+    if (up || down || right || left) {
+      particleManager.makeExhaustFire(spatial.getLocalTranslation(), lastRotation, System.currentTimeMillis())
     }
   }
 
