@@ -1,6 +1,6 @@
 package org.mystic
 
-import com.jme3.math.{ColorRGBA, Vector3f}
+import com.jme3.math.{FastMath, ColorRGBA, Vector3f}
 import com.jme3.scene.{Spatial, Node}
 import org.mystic.controls.ParticleControl
 
@@ -68,5 +68,35 @@ class ParticleManager(guiNode: Node, standardParticle: Spatial, glowParticle: Sp
     val particleSpeed = max * (1f - 0.6f / (random.nextFloat() * 5 + 1))
     velocity.multLocal(particleSpeed)
     velocity
+  }
+
+  def sprayParticle(position: Vector3f, vector3f: Vector3f) = {
+    val particle = standardParticle.clone()
+    particle.setLocalTranslation(position)
+    // todo change to some pleasant colors
+    val color = new ColorRGBA(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1f)
+    particle.addControl(new ParticleControl(vector3f, 3500, color))
+    particle.setUserData("affectedByGravity", true)
+    guiNode.getChild("particles").asInstanceOf[Node].attachChild(particle)
+  }
+
+  def blackHoleExplosion(position: Vector3f, spawnTime: Long) = {
+    val hue = ((System.currentTimeMillis() - spawnTime) * 0.003f) % 6f
+    val numParticles = 150
+    val color = Utils.hsvToColor(hue, 0.25f, 1)
+    val startOffset = random.nextFloat() * FastMath.PI * 2 / numParticles
+
+    for (i <- 0 until numParticles) {
+      val alpha = FastMath.PI * 2 * i / numParticles + startOffset
+      val velocity = Utils.getVectorFromAngle(alpha).multLocal(random.nextFloat() * 200 + 300)
+      val pos = position.add(velocity.mult(0.1f))
+
+      val particle = standardParticle.clone()
+      particle.setLocalTranslation(pos)
+      particle.addControl(new ParticleControl(velocity, 1000, color))
+      // todo let's blow it up
+      particle.setUserData("affectedByGravity", true)
+      guiNode.getChild("particles").asInstanceOf[Node].attachChild(particle)
+    }
   }
 }
