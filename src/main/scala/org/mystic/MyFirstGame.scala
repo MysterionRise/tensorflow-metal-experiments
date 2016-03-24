@@ -402,8 +402,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     target.getName match {
       case "Player" => target.getControl(0).asInstanceOf[PlayerControl].applyGravity(gravity.multLocal(500f))
       case "Bullet" => target.getControl(0).asInstanceOf[BulletControl].applyGravity(gravity.multLocal(-0.99f))
-      case "Seeker" => target.getControl(0).asInstanceOf[SeekerControl].applyGravity(gravity.multLocal(40000f))
-      case "Wanderer" => target.getControl(0).asInstanceOf[WandererControl].applyGravity(gravity.multLocal(40000f))
+      case "Seeker" => target.getControl(0).asInstanceOf[SeekerControl].applyGravity(gravity.multLocal(60000f))
+      case "Wanderer" => target.getControl(0).asInstanceOf[WandererControl].applyGravity(gravity.multLocal(60000f))
       case "Laser" => target.getControl(0).asInstanceOf[ParticleControl].applyGravity(gravity.mult(15000f), distance)
       case "Glow" => target.getControl(0).asInstanceOf[ParticleControl].applyGravity(gravity.mult(15000f), distance)
     }
