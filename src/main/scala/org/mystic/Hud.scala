@@ -14,6 +14,8 @@ class Hud(assetManager: AssetManager, guiNode: Node, width: Int, height: Int) {
     multiplier = 1
   }
 
+  def addPointForBlackHole = score += 10 * multiplier
+
   def addPoint = score += multiplier
 
   def removeLife = lives -= 1
