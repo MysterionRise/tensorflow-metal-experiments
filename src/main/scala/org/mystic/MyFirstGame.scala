@@ -1,27 +1,22 @@
 package org.mystic
 
-import java.awt.GraphicsEnvironment
-import java.io.{PrintWriter, BufferedReader, File, FileReader}
-import java.util.concurrent.TimeUnit
-import com.jme3.cursors.plugins.JmeCursor
-import com.jme3.system.AppSettings
-
-import scala.collection.JavaConversions._
 import com.jme3.app.SimpleApplication
+import com.jme3.cursors.plugins.JmeCursor
 import com.jme3.input.controls.{ActionListener, AnalogListener, KeyTrigger, MouseButtonTrigger}
 import com.jme3.input.{KeyInput, MouseInput}
 import com.jme3.material.Material
 import com.jme3.material.RenderState.BlendMode
-import com.jme3.math.{FastMath, Vector2f, Vector3f}
+import com.jme3.math.Vector3f
 import com.jme3.post.FilterPostProcessor
 import com.jme3.post.filters.BloomFilter
 import com.jme3.scene.{Node, Spatial}
+import com.jme3.system.AppSettings
 import com.jme3.texture.Texture2D
 import com.jme3.ui.Picture
-import org.mystic.controls._
 import org.mystic.Utils._
+import org.mystic.controls._
 
-import scala.collection.immutable.HashSet
+import scala.collection.JavaConversions._
 import scala.util.Random
 
 object MyFirstGame extends SimpleApplication with ActionListener with AnalogListener {
@@ -131,6 +126,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     val mySettings = new AppSettings(true)
     mySettings.setTitle("Neon shooter")
     mySettings.setSettingsDialogImage("Interface/splashscreen.png")
+    mySettings.getHeight
+    mySettings.getWidth
     //    val device = GraphicsEnvironment.getLocalGraphicsEnvironment.getDefaultScreenDevice
     //    val modes = device.getDisplayModes
     //    val widths = new HashSet[Int]
@@ -391,6 +388,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     val v1 = a.getLocalTranslation
     val v2 = b.getLocalTranslation
     // TODO change constant depending on size of screen
+
     v1.distanceSquared(v2) <= 700f * 700f
   }
 
