@@ -121,13 +121,17 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     guiViewPort.setClearColor(true)
   }
 
+  var screenHeight = 0
+  var screeWidth = 0
+
+
   // entry point of the game
   def main(args: Array[String]): Unit = {
     val mySettings = new AppSettings(true)
     mySettings.setTitle("Neon shooter")
     mySettings.setSettingsDialogImage("Interface/splashscreen.png")
-    mySettings.getHeight
-    mySettings.getWidth
+    screenHeight = mySettings.getHeight
+    screeWidth = mySettings.getWidth
     //    val device = GraphicsEnvironment.getLocalGraphicsEnvironment.getDefaultScreenDevice
     //    val modes = device.getDisplayModes
     //    val widths = new HashSet[Int]
