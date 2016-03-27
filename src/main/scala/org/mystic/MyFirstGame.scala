@@ -391,9 +391,8 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   def isNear(a: Spatial, b: Spatial): Boolean = {
     val v1 = a.getLocalTranslation
     val v2 = b.getLocalTranslation
-    // TODO change constant depending on size of screen
-
-    v1.distanceSquared(v2) <= 700f * 700f
+    // todo may be still not the best solution
+    v1.distanceSquared(v2) <= Math.min(screenHeight, screeWidth) * Math.min(screenHeight, screeWidth)
   }
 
   def applyGravity(blackHole: Spatial, target: Spatial, tpf: Float) = {
