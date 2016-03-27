@@ -310,7 +310,7 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
   }
 
   def spawnExtraLife = {
-    if (extraLifeNode.getQuantity == 0 && new Random().nextInt(100) == 1) {
+    if (extraLifeNode.getQuantity < 2 && new Random().nextInt(1000) == 1) {
       createExtraLife
     }
   }
@@ -383,7 +383,6 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
         sound.extraLife
         extraLifeNode.detachChild(extra)
         hud.addLife
-        // add extra life to player
       }
     })
   }
