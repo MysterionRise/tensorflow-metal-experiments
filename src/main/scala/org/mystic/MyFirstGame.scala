@@ -7,6 +7,7 @@ import com.jme3.input.{KeyInput, MouseInput}
 import com.jme3.material.Material
 import com.jme3.material.RenderState.BlendMode
 import com.jme3.math.Vector3f
+import com.jme3.niftygui.NiftyJmeDisplay
 import com.jme3.post.FilterPostProcessor
 import com.jme3.post.filters.BloomFilter
 import com.jme3.scene.{Node, Spatial}
@@ -119,6 +120,14 @@ object MyFirstGame extends SimpleApplication with ActionListener with AnalogList
     fpp.addFilter(bloom)
     guiViewPort.addProcessor(fpp)
     guiViewPort.setClearColor(true)
+
+    // add hud as nifty display
+    val niftyJmeDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort)
+    val nifty = niftyJmeDisplay.getNifty
+    nifty.fromXml("Interface/hud.xml", "hud")
+    guiViewPort.addProcessor(niftyJmeDisplay)
+
+
   }
 
   var screenHeight = 0
