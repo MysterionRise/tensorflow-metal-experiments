@@ -42,16 +42,18 @@ Test installation by running Jupyter lab
 ```
 jupyter lab
 ```
-Run `tensorflow_test.ipynb`, check Activity monitor to check that GPU is utilised
+Run `tf_fashion_mnist_train.ipynb` or `tf_mnist_train.ipynb`, check Activity monitor to check that GPU is utilised
 
-Test results:
+Test results (comparison of different approaches):
 
 ```
-+--------------------------------------------------------+-----+-----------------------+
-|                        Hardware                        | GPU | Average training time |
-+--------------------------------------------------------+-----+-----------------------+
-| Apple M1 Max with 10-core CPU, 32-core GPU, 64 Gb RAM  | Y   | 106 sec               |
-| 2.4 Ghz 8-core i9 32 Gb RAM                            | N   | 254 sec               |
-| NVidia 8Gb GDDR6 RTX2070 Windows 10 Anaconda 32 Gb RAM | N   | 55 sec                |
-+--------------------------------------------------------+-----+-----------------------+
++-----------------------------------------------------------------------+-----+-------------------------------+----------------------------------------+
+|                               Hardware                                | GPU | Avg train (MNIST, 93k params) | Avg train (MNIST Fashion, 412k params) |
++-----------------------------------------------------------------------+-----+-------------------------------+----------------------------------------+
+| Apple M1 Max with 10-core CPU, 32-core GPU, 64 Gb RAM                 | Y   | 106 sec                       | 127 sec                                |
+| Apple M1 Max with 10-core CPU, 32-core GPU, 64 Gb RAM CPU ONLY        | N   | 85 sec                        | 114 sec                                |
+| 2.4 Ghz 8-core i9 32 Gb RAM                                           | N   | 254 sec                       | 423 sec                                |
+| Nvidia 8Gb GDDR6 RTX2070 Windows 10 Anaconda 32 Gb RAM                | Y   | 55 sec                        | 54 sec                                 |
+| Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz Windows 10 Anaconda 32 Gb RAM | N   | 136 sec                       | 255 sec                                |
++-----------------------------------------------------------------------+-----+-------------------------------+----------------------------------------+
 ```
