@@ -55,10 +55,10 @@ Test results (comparison of different approaches):
 +-----------------------------------------------------------------------+-----+-------------------------------+----------------------------------------+---------------------------------------------------------+
 | Apple M1 Max with 10-core CPU, 32-core GPU, 64 Gb RAM                 | Y   | 106 sec                       | 127 sec                                | 21s/epoch, 54ms/step (size=128)                         |
 | Apple M1 Max with 10-core CPU, 32-core GPU, 64 Gb RAM CPU ONLY        | N   | 85 sec                        | 114 sec                                | 368s/epoch, 940ms/step (size=128)                       |                                  
-| Apple M2 with 8-core CPU, 10-core GPU, 24 Gb RAM                      | Y   | 109 sec                       | N/A                                    | N/A                                                     |                                  
-| Apple M2 with 8-core CPU, 10-core GPU, 24 Gb RAM CPU ONLY             | N   | 89 sec                        | N/A                                    | N/A                                                     |                                  
+| Apple M2 with 8-core CPU, 10-core GPU, 24 Gb RAM                      | Y   | 109 sec                       | 123 sec                                | 64s/epoch, 163ms/step (size=128)                        |                                  
+| Apple M2 with 8-core CPU, 10-core GPU, 24 Gb RAM CPU ONLY             | N   | 89 sec                        | 136 sec                                | 528s/epoch, 1s/step (size=128)                          |                                  
 | 2.4 Ghz 8-core i9 32 Gb RAM                                           | N   | 254 sec                       | 423 sec                                | 630s/epoch, 2s/step (size=128)                          |
 | Nvidia 8Gb GDDR6 RTX2070 Windows 10 Anaconda 32 Gb RAM                | Y   | 55 sec                        | 54 sec                                 | 18s/epoch, 43ms/step (size=128)                         |
-| Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz Windows 10 Anaconda 32 Gb RAM | N   | 136 sec                       | 255 sec                                | 863 sec epoch  2s/step (size=128)                       |
+| Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz Windows 10 Anaconda 32 Gb RAM | N   | 136 sec                       | 255 sec                                | 863s/epoch  2s/step (size=128)                          |
 +-----------------------------------------------------------------------+-----+-------------------------------+----------------------------------------+---------------------------------------------------------+
 ```
