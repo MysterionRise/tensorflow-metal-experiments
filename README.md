@@ -1,6 +1,6 @@
 # Repo dedicated to various Tensorflow-metal experiments
 
-## How to run on M1 chip with GPU support
+## How to run on M1/M2 chip with GPU support
 
 Install conda (as possible option use https://github.com/conda-forge/miniforge/releases)
 ```
