@@ -41,9 +41,9 @@ Install WSL, probably good idea to keep Python 3.10 due to the following [bug](h
 wsl --install
 ```
 
-Install dependencies 
+Install dependencies (TF version 2.15.1 is *temporary* fix cause of [bug](https://github.com/tensorflow/tensorflow/issues/64881))
 ```
-pip install tensorflow[and-cuda]
+pip install tensorflow[and-cuda]==2.15.1
 pip install matplotlib jupyterlab
 ```
 
