@@ -69,5 +69,7 @@ Test results (comparison of different approaches):
 | 2.4 Ghz 8-core i9 32 Gb RAM                                           | N   | 254 sec                       | 423 sec                                | 630s/epoch, 2s/step (size=128)                          |
 | Nvidia 8Gb GDDR6 RTX2070 Windows 10 Anaconda 32 Gb RAM                | Y   | 55 sec                        | 54 sec                                 | 18s/epoch, 43ms/step (size=128)                         |
 | Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz Windows 10 Anaconda 32 Gb RAM | N   | 136 sec                       | 255 sec                                | 863s/epoch  2s/step (size=128)                          |
+| Nvidia 12Gb GDDR6 RTX4070 Windows 11 Pip 64 Gb RAM                    | N   | 44 sec                        | 42 sec                                 | 7s/epoch,  19ms/step (size=128)                         |
+| Intel(R) Core(TM) i7-13700KF CPU @ 3.40GHz Windows 11 Pip 64 Gb RAM   | N   | 45 sec                        | 68 sec                                 | 126s/epoch, 321ms/step (size=128)                       |
 +-----------------------------------------------------------------------+-----+-------------------------------+----------------------------------------+---------------------------------------------------------+
 ```
