@@ -32,10 +32,19 @@ conda install -y matplotlib jupyterlab
 ```
 
 Install dependencies & create env (for Win GPU machine) 
+
+Full guide - https://www.tensorflow.org/install/pip#windows-wsl2_1
+
+Install WSL, probably good idea to keep Python 3.10 due to the following [bug](https://discuss.tensorflow.org/t/tensorflow-2-13-0-does-not-find-gpu-with-cuda-12-1/18939)
+
 ```
-conda create -n tf-gpu tensorflow-gpu
-conda activate tf-gpu
-conda install -y matplotlib jupyterlab
+wsl --install
+```
+
+Install dependencies 
+```
+pip install tensorflow[and-cuda]
+pip install matplotlib jupyterlab
 ```
 
 Test installation by running Jupyter lab
