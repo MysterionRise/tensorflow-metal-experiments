@@ -17,11 +17,10 @@ conda activate tensorflow
 
 Install dependencies (for M1/M2 chips)
 ```
-conda install -c apple tensorflow-deps
-python -m pip install tensorflow-macos
+python -m pip install tensorflow
 python -m pip install tensorflow-metal
 brew install libjpeg
-conda install -y matplotlib jupyterlab
+python -m pip install matplotlib jupyterlab
 ```
 
 Install dependencies (for x64 MacBooks)
