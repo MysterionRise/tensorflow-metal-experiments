@@ -1,0 +1,32 @@
+{
+  "hardware": "M4 Pro 16-core GPU",
+  "date": "2026-02-04",
+  "description": "Naive vs Optimized benchmark comparison",
+  "results": [
+    {
+      "benchmark": "MNIST CNN",
+      "params": "93K",
+      "tf_naive": 77.2,
+      "tf_opt": 24.8,
+      "mlx_naive": 16.4,
+      "mlx_opt": 11.6,
+      "tf_naive_acc": 0.989,
+      "tf_opt_acc": 0.990,
+      "mlx_naive_acc": 0.991,
+      "mlx_opt_acc": 0.987
+    },
+    {
+      "benchmark": "Fashion CNN",
+      "params": "412K",
+      "tf_naive": 95.3,
+      "tf_opt": 28.2,
+      "mlx_naive": 28.0,
+      "mlx_opt": 24.1,
+      "tf_naive_acc": 0.821,
+      "tf_opt_acc": 0.804,
+      "mlx_naive_acc": 0.877,
+      "mlx_opt_acc": 0.846
+    }
+  ],
+  "notes": "VGG16 excluded due to training convergence issues"
+}

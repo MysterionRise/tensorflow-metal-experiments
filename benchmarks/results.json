@@ -1,0 +1,239 @@
+{
+  "metadata": {
+    "version": "2.0.0",
+    "last_updated": "2026-02-04",
+    "description": "Benchmark results comparing GPU vs CPU training performance across different hardware configurations"
+  },
+  "benchmarks": {
+    "vgg16_cifar100": {
+      "description": "VGG16-style network (34M parameters) on CIFAR-100, 50 epochs, batch_size=128",
+      "metric": "seconds_per_epoch",
+      "results": [
+        {
+          "hardware": "RTX 4070 Super 12GB",
+          "platform": "Windows 11",
+          "gpu": true,
+          "value": 7,
+          "ms_per_step": 19
+        },
+        {
+          "hardware": "RTX 2070 8GB",
+          "platform": "Windows 10",
+          "gpu": true,
+          "value": 18,
+          "ms_per_step": 43
+        },
+        {
+          "hardware": "M1 Max 32-core GPU",
+          "platform": "macOS",
+          "gpu": true,
+          "value": 21,
+          "ms_per_step": 54
+        },
+        {
+          "hardware": "M2 10-core GPU",
+          "platform": "macOS",
+          "gpu": true,
+          "value": 64,
+          "ms_per_step": 163
+        },
+        {
+          "hardware": "M4 Pro 16-core GPU",
+          "platform": "macOS",
+          "gpu": true,
+          "value": 26,
+          "ms_per_step": 66
+        },
+        {
+          "hardware": "i7-13700KF 3.4GHz",
+          "platform": "Windows 11",
+          "gpu": false,
+          "value": 126,
+          "ms_per_step": 321
+        },
+        {
+          "hardware": "M1 Max 10-core CPU",
+          "platform": "macOS",
+          "gpu": false,
+          "value": 368,
+          "ms_per_step": 940
+        },
+        {
+          "hardware": "M2 8-core CPU",
+          "platform": "macOS",
+          "gpu": false,
+          "value": 528,
+          "ms_per_step": 1000
+        },
+        {
+          "hardware": "i9 2.4GHz 8-core",
+          "platform": "macOS",
+          "gpu": false,
+          "value": 630,
+          "ms_per_step": 2000
+        },
+        {
+          "hardware": "i7-8700 3.2GHz",
+          "platform": "Windows 10",
+          "gpu": false,
+          "value": 863,
+          "ms_per_step": 2000
+        }
+      ]
+    },
+    "mnist_cnn": {
+      "description": "Simple CNN (93k parameters) on MNIST, 10 epochs, batch_size=64",
+      "metric": "total_seconds",
+      "results": [
+        {
+          "hardware": "RTX 4070 Super 12GB",
+          "platform": "Windows 11",
+          "gpu": true,
+          "value": 44
+        },
+        {
+          "hardware": "RTX 2070 8GB",
+          "platform": "Windows 10",
+          "gpu": true,
+          "value": 55
+        },
+        {
+          "hardware": "M1 Max 32-core GPU",
+          "platform": "macOS",
+          "gpu": true,
+          "value": 106
+        },
+        {
+          "hardware": "M2 10-core GPU",
+          "platform": "macOS",
+          "gpu": true,
+          "value": 109
+        },
+        {
+          "hardware": "M4 Pro 16-core GPU",
+          "platform": "macOS",
+          "gpu": true,
+          "value": 76
+        },
+        {
+          "hardware": "M1 Max 10-core CPU",
+          "platform": "macOS",
+          "gpu": false,
+          "value": 85
+        },
+        {
+          "hardware": "M2 8-core CPU",
+          "platform": "macOS",
+          "gpu": false,
+          "value": 89
+        },
+        {
+          "hardware": "i7-8700 3.2GHz",
+          "platform": "Windows 10",
+          "gpu": false,
+          "value": 136
+        },
+        {
+          "hardware": "i9 2.4GHz 8-core",
+          "platform": "macOS",
+          "gpu": false,
+          "value": 254
+        }
+      ]
+    },
+    "fashion_mnist_cnn": {
+      "description": "CNN with dropout (412k parameters) on Fashion MNIST, 10 epochs, batch_size=64",
+      "metric": "total_seconds",
+      "results": [
+        {
+          "hardware": "RTX 4070 Super 12GB",
+          "platform": "Windows 11",
+          "gpu": true,
+          "value": 42
+        },
+        {
+          "hardware": "RTX 2070 8GB",
+          "platform": "Windows 10",
+          "gpu": true,
+          "value": 54
+        },
+        {
+          "hardware": "M2 10-core GPU",
+          "platform": "macOS",
+          "gpu": true,
+          "value": 123
+        },
+        {
+          "hardware": "M1 Max 32-core GPU",
+          "platform": "macOS",
+          "gpu": true,
+          "value": 127
+        },
+        {
+          "hardware": "M4 Pro 16-core GPU",
+          "platform": "macOS",
+          "gpu": true,
+          "value": 93
+        },
+        {
+          "hardware": "M1 Max 10-core CPU",
+          "platform": "macOS",
+          "gpu": false,
+          "value": 114
+        },
+        {
+          "hardware": "M2 8-core CPU",
+          "platform": "macOS",
+          "gpu": false,
+          "value": 136
+        },
+        {
+          "hardware": "i7-8700 3.2GHz",
+          "platform": "Windows 10",
+          "gpu": false,
+          "value": 255
+        },
+        {
+          "hardware": "i9 2.4GHz 8-core",
+          "platform": "macOS",
+          "gpu": false,
+          "value": 423
+        }
+      ]
+    },
+    "optimized_comparison": {
+      "description": "Naive vs Optimized benchmark on M4 Pro 16-core GPU (10 epochs)",
+      "metric": "total_seconds",
+      "hardware": "M4 Pro 16-core GPU",
+      "results": [
+        {
+          "model": "MNIST CNN",
+          "params": "93K",
+          "tf_naive": 77.2,
+          "tf_optimized": 24.8,
+          "mlx_naive": 16.4,
+          "mlx_optimized": 11.6,
+          "tf_speedup": 3.1,
+          "mlx_speedup": 1.4,
+          "winner": "MLX Optimized"
+        },
+        {
+          "model": "Fashion CNN",
+          "params": "412K",
+          "tf_naive": 95.3,
+          "tf_optimized": 28.2,
+          "mlx_naive": 28.0,
+          "mlx_optimized": 24.1,
+          "tf_speedup": 3.4,
+          "mlx_speedup": 1.2,
+          "winner": "MLX Optimized"
+        }
+      ],
+      "optimizations": {
+        "tensorflow": "tf.data.Dataset + batch=256 + prefetch",
+        "mlx": "mx.eval() once per epoch + batch=256"
+      },
+      "notes": "VGG16 excluded due to SGD optimizer convergence issues"
+    }
+  }
+}
